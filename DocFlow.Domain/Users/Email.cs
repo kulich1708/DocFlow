@@ -8,6 +8,7 @@ namespace DocFlow.Domain.Users
 	{
 		public string Value { get; }
 
+		public Email() { }
 		public Email(string value)
 		{
 			if (string.IsNullOrWhiteSpace(value))
@@ -18,5 +19,6 @@ namespace DocFlow.Domain.Users
 
 			Value = value.Trim().ToLowerInvariant();
 		}
+		public override string ToString() => Value;
 	}
 }
