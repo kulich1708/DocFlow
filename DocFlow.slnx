@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="DocFlow.API/DocFlow.API.csproj" />
+  <Project Path="DocFlow.Domain/DocFlow.Domain.csproj" />
+  <Project Path="DocFlow.Infrastructure/DocFlow.Infrastructure.csproj" />
+</Solution>

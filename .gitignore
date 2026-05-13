@@ -1,0 +1,26 @@
+# .NET
+bin/
+obj/
+publish/
+.vs/
+*.user
+*.suo
+
+# Database
+*.mdf
+*.ldf
+
+# Node (for React)
+node_modules/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Environment
+/DocFlow.API/appsettings.json
+/DocFlow.API/appsettings.Development.json
+*.secrets.json
+EOF
