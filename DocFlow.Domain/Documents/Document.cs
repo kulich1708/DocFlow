@@ -42,12 +42,11 @@ namespace DocFlow.Domain.Documents
 		{
 			if (content != Draft.Content.Value)
 				IsChanged = true;
-			Draft.Update(content, DateTime.UtcNow);
+			Draft.Update(content);
 		}
 		public void AddVersion()
 		{
-			int versionsLength = _versions.Count;
-			DocumentVersion? lastDocumentVersion = versionsLength > 0 ? _versions.Last() : null;
+			var lastDocumentVersion = GetLastVersion();
 
 			if (!IsChanged || lastDocumentVersion != null && lastDocumentVersion.Content.Value == Draft.Content.Value)
 				throw new ArgumentException("Текст этой версии не отличается от предыдущей");
@@ -58,5 +57,9 @@ namespace DocFlow.Domain.Documents
 
 			IsChanged = false;
 		}
+		public void ResetDraft()
+		 => Draft.Update(GetLastVersion()?.Content?.Value ?? "");
+
+		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();
 	}
 }

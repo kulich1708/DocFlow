@@ -14,10 +14,10 @@ namespace DocFlow.Domain.Documents
 		{
 			Update(content, CreatedAt);
 		}
-		public void Update(string content, DateTime modifiedAt)
+		public void Update(string content, DateTime? modifiedAt = null)
 		{
 			Content = new(content);
-			ModifiedAt = modifiedAt;
+			ModifiedAt = modifiedAt ?? DateTime.UtcNow;
 		}
 
 	}
