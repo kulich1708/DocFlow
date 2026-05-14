@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.72" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4">
 			<PrivateAssets>all</PrivateAssets>
@@ -21,9 +22,5 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DocFlow.Domain\DocFlow.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Persistence\Repositories\" />
 	</ItemGroup>
 </Project>
