@@ -11,7 +11,7 @@ namespace DocFlow.Domain.Users
 		public string Surname { get; private set; }
 		public Email Email { get; private set; }
 		public string PasswordHash { get; private set; }
-
+		private User() { }
 		public User(string name, string surname, string email, string passwordHash)
 		{
 			SetGeneral(name, surname, email, passwordHash);

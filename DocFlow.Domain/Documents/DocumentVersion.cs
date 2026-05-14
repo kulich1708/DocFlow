@@ -10,6 +10,7 @@ namespace DocFlow.Domain.Documents
 		public int Version { get; private set; }
 		public DocumentContent Content { get; private set; }
 
+		private DocumentVersion() { }
 		public DocumentVersion(int version, string content)
 		{
 			Version = version;

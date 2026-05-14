@@ -58,7 +58,10 @@ namespace DocFlow.Domain.Documents
 			IsChanged = false;
 		}
 		public void ResetDraft()
-		 => Draft.Update(GetLastVersion()?.Content?.Value ?? "");
+		{
+			Draft.Update(GetLastVersion()?.Content?.Value ?? "");
+			IsChanged = false;
+		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();
 	}

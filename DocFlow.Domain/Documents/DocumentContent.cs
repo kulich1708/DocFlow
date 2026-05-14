@@ -6,7 +6,7 @@ namespace DocFlow.Domain.Documents
 {
 	public record DocumentContent
 	{
-		public string Value { get; private set; }
+		public string Value { get; }
 
 		public DocumentContent(string value)
 		{

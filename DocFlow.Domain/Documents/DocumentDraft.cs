@@ -5,14 +5,14 @@ using System.Text;
 
 namespace DocFlow.Domain.Documents
 {
-	public class DocumentDraft : BaseEntity
+	public class DocumentDraft
 	{
 		public DocumentContent Content { get; private set; }
 		public DateTime ModifiedAt { get; private set; }
-
+		private DocumentDraft() { }
 		public DocumentDraft(string content)
 		{
-			Update(content, CreatedAt);
+			Update(content);
 		}
 		public void Update(string content, DateTime? modifiedAt = null)
 		{
