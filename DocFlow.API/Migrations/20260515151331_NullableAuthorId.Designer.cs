@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DocFlow.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260513210743_DeleteEmptyEmailConstructor")]
-    partial class DeleteEmptyEmailConstructor
+    [Migration("20260515151331_NullableAuthorId")]
+    partial class NullableAuthorId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace DocFlow.API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<int>("CategoryId")

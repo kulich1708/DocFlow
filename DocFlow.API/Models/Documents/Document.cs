@@ -9,22 +9,22 @@ namespace DocFlow.API.Documents
 	{
 		private readonly List<DocumentVersion> _versions = new();
 
-		public int AuthorId { get; private set; }
+		public int? AuthorId { get; private set; }
 		public int CategoryId { get; private set; }
 		public bool IsPrivate { get; private set; }
 		public DocumentDraft Draft { get; private set; } = new("");
 		public bool IsChanged { get; private set; } = false;
 		public IReadOnlyList<DocumentVersion> Versions => _versions;
 
-		public Document(int authorId, int categoryId, bool isPrivate)
+		public Document(int? authorId, int categoryId, bool isPrivate)
 		{
 			SetAuthor(authorId);
 			SetCategory(categoryId);
 			SetPrivate(isPrivate);
 		}
-		public void SetAuthor(int authorId)
+		public void SetAuthor(int? authorId)
 		{
-			if (authorId <= 0)
+			if (authorId <= 0 || !authorId.HasValue)
 				throw new ArgumentException("Id автора должно быть положительным");
 
 			AuthorId = authorId;

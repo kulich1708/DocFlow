@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DocFlow.API.Migrations
 {
     /// <inheritdoc />
-    public partial class baseTables : Migration
+    public partial class MigrationBeforeRemovedAllMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,8 +38,6 @@ namespace DocFlow.API.Migrations
                     IsPrivate = table.Column<bool>(type: "boolean", nullable: false),
                     DraftContent = table.Column<string>(type: "text", nullable: false),
                     DraftModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Draft_Id = table.Column<int>(type: "integer", nullable: false),
-                    Draft_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsChanged = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
