@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DocFlow.API.Services.Auth;
 using System.Text;
+using DocFlow.API.Persistence.Repositories;
 
 namespace DocFlow.API
 {
@@ -63,6 +65,11 @@ namespace DocFlow.API
 					Title = $"{_name} API",
 				});
 			});
+
+			services.AddScoped<JwtService>();
+			services.AddScoped<UnitOfWork>();
+			services.AddScoped<PasswordService>();
+			services.AddScoped<UserRepository>();
 		}
 
 		private static async Task ConfigureMiddleware(WebApplication app)
