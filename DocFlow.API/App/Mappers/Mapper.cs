@@ -16,11 +16,11 @@ namespace DocFlow.API.App.Mappers
 			=> new(version.Id, version.Version, version.Content.Value);
 		public static DocumentDraftDTO ToDTO(DocumentDraft draft)
 			=> new(draft.Content.Value, draft.ModifiedAt);
-		public static DocumentDTO ToDTO(Document document)
+		public static DocumentDTO ToDTO(Document document, bool canEdit)
 			=> new(
 				ToDocumentGeneralInfoDTO(document),
 				document.Versions.Select(ToDTO).ToList(),
 				ToDTO(document.Draft),
-				false);
+				canEdit);
 	}
 }

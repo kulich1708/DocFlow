@@ -50,7 +50,7 @@ namespace DocFlow.API.Controllers
 		[HttpPost("change-password")]
 		public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
 		{
-			int userId = User.GetUserId();
+			int userId = User.GetUserIdOrThrow();
 			User user = await _userRepository.GetAsync(userId);
 			if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.PasswordHash))
 				return BadRequest(new { message = "Неверный текущий пароль" });
@@ -58,18 +58,18 @@ namespace DocFlow.API.Controllers
 			user.SetPassword(_passwordService.HashPassword(dto.NewPassword));
 			await _unitOfWork.SaveChangesAsync();
 
-			return Ok();
+			return NoContent();
 		}
 		[Authorize]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteAccount()
 		{
-			int userId = User.GetUserId();
+			int userId = User.GetUserIdOrThrow();
 			await _documentRepository.DeleteAuthor(userId);
 			await _userRepository.DeleteAsync(userId);
 			await _unitOfWork.SaveChangesAsync();
 
-			return Ok();
+			return NoContent();
 		}
 	}
 }

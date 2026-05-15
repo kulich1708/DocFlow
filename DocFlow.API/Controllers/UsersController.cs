@@ -28,10 +28,13 @@ namespace DocFlow.API.Controllers
 		public async Task<ActionResult<List<DocumentDTO>>> GetDocuments(int id)
 		{
 			int? authorizationUserId = User.GetUserId();
-			bool isMe = authorizationUserId.HasValue && authorizationUserId.Value == id;
+			if (!authorizationUserId.HasValue)
+				return Ok(new List<DocumentDTO>());
+
+			bool isMe = authorizationUserId.Value == id;
 			List<Document> documents = await _documentRepository.GetByUserAsync(id, isMe);
 
-			return Ok(documents.Select(Mapper.ToDTO));
+			return Ok(documents.Select(d => Mapper.ToDTO(d, isMe)));
 		}
 	}
 }

@@ -11,17 +11,16 @@ namespace DocFlow.API.Documents
 
 		public string Name { get; private set; }
 		public int? AuthorId { get; private set; }
-		public int CategoryId { get; private set; }
+		public int? CategoryId { get; private set; }
 		public bool IsPrivate { get; private set; }
 		public DocumentDraft Draft { get; private set; } = new("");
 		public bool IsChanged { get; private set; } = false;
 		public IReadOnlyList<DocumentVersion> Versions => _versions;
 
-		public Document(int? authorId, int categoryId, bool isPrivate)
+		public Document(string name, int? authorId = null, int? categoryId = null, bool isPrivate = true)
 		{
 			SetAuthor(authorId);
-			SetCategory(categoryId);
-			SetPrivate(isPrivate);
+			ChangeGeneralInfo(name, categoryId, isPrivate);
 		}
 		public void SetName(string name)
 		{
@@ -69,6 +68,13 @@ namespace DocFlow.API.Documents
 		{
 			Draft.Update(GetLastVersion()?.Content?.Value ?? "");
 			IsChanged = false;
+		}
+		public void ChangeGeneralInfo(string name, int? categoryId = null, bool isPrivate = false)
+		{
+			SetName(name);
+			SetPrivate(isPrivate);
+			if (categoryId.HasValue)
+				SetCategory(categoryId.Value);
 		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();

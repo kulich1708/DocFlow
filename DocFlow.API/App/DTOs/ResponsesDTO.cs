@@ -4,7 +4,7 @@
 		int Id, string Name, string Surname, string Email);
 
 	public record DocumentGeneralInfoDTO(
-		int Id, string Name, int? AuthorId, int CategoryId, bool IsPrivate);
+		int Id, string Name, int? AuthorId, int? CategoryId, bool IsPrivate);
 
 	public record DocumentVersionDTO(
 		int Id, int Version, string Content);
