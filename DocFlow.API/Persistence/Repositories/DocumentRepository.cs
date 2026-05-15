@@ -17,8 +17,13 @@ namespace DocFlow.API.Persistence.Repositories
 		public async Task<List<Document>> GetByCategoriesAsync(List<int> categoriesId)
 			=> await _context.Documents.Where(d => categoriesId.Contains(d.CategoryId)).ToListAsync();
 
-		public async Task<List<Document>> GetByUserAsync(int userId)
-			=> await _context.Documents.Where(d => d.AuthorId == userId).ToListAsync();
+		public async Task<List<Document>> GetByUserAsync(int userId, bool includePrivate = false)
+		{
+			var query = _context.Documents.Where(d => d.AuthorId == userId);
+			if (!includePrivate)
+				query = query.Where(d => !d.IsPrivate);
+			return await query.ToListAsync();
+		}
 
 		public async Task DeleteAuthor(int userId)
 		{
