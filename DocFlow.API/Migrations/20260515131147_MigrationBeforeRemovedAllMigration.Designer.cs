@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DocFlow.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260513203855_fixUserEmail")]
-    partial class fixUserEmail
+    [Migration("20260515131147_MigrationBeforeRemovedAllMigration")]
+    partial class MigrationBeforeRemovedAllMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
