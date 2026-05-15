@@ -13,12 +13,13 @@ namespace DocFlow.API.Documents
 		public int? AuthorId { get; private set; }
 		public int? CategoryId { get; private set; }
 		public bool IsPrivate { get; private set; }
-		public DocumentDraft Draft { get; private set; } = new("");
+		public DocumentDraft Draft { get; private set; }
 		public bool IsChanged { get; private set; } = false;
 		public IReadOnlyList<DocumentVersion> Versions => _versions;
 
 		public Document(string name, int? authorId = null, int? categoryId = null, bool isPrivate = true)
 		{
+			Draft = new(new(""));
 			SetAuthor(authorId);
 			ChangeGeneralInfo(name, categoryId, isPrivate);
 		}
@@ -49,7 +50,7 @@ namespace DocFlow.API.Documents
 		{
 			if (content != Draft.Content.Value)
 				IsChanged = true;
-			Draft.Update(content);
+			Draft.Update(new(content));
 		}
 		public void AddVersion()
 		{
@@ -64,9 +65,26 @@ namespace DocFlow.API.Documents
 
 			IsChanged = false;
 		}
+		public void DeleteVersion(int versionId)
+		{
+			var version = _versions.FirstOrDefault(v => v.Id == versionId);
+			if (version == null)
+				throw new ArgumentException("Документ не содержит такой версии");
+
+			_versions.Remove(version);
+		}
+		public void CreateDraftFromVersion(int versionId)
+		{
+			var version = _versions.FirstOrDefault(v => v.Id == versionId);
+			if (version == null)
+				throw new ArgumentException("Документ не содержит такой версии");
+
+			Draft.Update(version.Content, version.Content);
+			IsChanged = false;
+		}
 		public void ResetDraft()
 		{
-			Draft.Update(GetLastVersion()?.Content?.Value ?? "");
+			Draft.Update(Draft.InitialContent);
 			IsChanged = false;
 		}
 		public void ChangeGeneralInfo(string name, int? categoryId = null, bool isPrivate = false)

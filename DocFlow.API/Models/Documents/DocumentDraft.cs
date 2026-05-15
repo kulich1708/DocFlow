@@ -9,15 +9,19 @@ namespace DocFlow.API.Documents
 	{
 		public DocumentContent Content { get; private set; }
 		public DateTime ModifiedAt { get; private set; }
+		public DocumentContent InitialContent { get; private set; }
 		private DocumentDraft() { }
-		public DocumentDraft(string content)
+		public DocumentDraft(DocumentContent content)
 		{
-			Update(content);
+			Update(content, content);
 		}
-		public void Update(string content, DateTime? modifiedAt = null)
+		public void Update(DocumentContent content, DocumentContent? initialContent = null, DateTime? modifiedAt = null)
 		{
-			Content = new(content);
+			Content = content;
 			ModifiedAt = modifiedAt ?? DateTime.UtcNow;
+
+			if (initialContent != null)
+				InitialContent = initialContent;
 		}
 
 	}
