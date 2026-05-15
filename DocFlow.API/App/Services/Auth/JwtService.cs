@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DocFlow.API.Services.Auth
+namespace DocFlow.API.App.Services.Auth
 {
 	public class JwtService
 	{

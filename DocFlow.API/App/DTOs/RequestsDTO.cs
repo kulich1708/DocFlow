@@ -1,4 +1,4 @@
-﻿namespace DocFlow.API.DTOs
+﻿namespace DocFlow.API.App.DTOs
 {
 	public record UserRegistrateDTO(string Name, string Surname, string Email, string Password);
 	public record UserLoginDTO(string Email, string Password);
