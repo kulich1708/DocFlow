@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using DocFlow.API.Services.Auth;
 using System.Text;
 using DocFlow.API.Persistence.Repositories;
+using DocFlow.API.App.Services.Auth;
 
 namespace DocFlow.API
 {

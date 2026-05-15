@@ -1,4 +1,4 @@
-﻿namespace DocFlow.API.Services.Auth
+﻿namespace DocFlow.API.App.Services.Auth
 {
 	public class PasswordService
 	{

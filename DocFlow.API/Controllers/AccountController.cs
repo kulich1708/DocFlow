@@ -1,6 +1,6 @@
-﻿using DocFlow.API.DTOs;
+﻿using DocFlow.API.App.DTOs;
+using DocFlow.API.App.Services.Auth;
 using DocFlow.API.Persistence.Repositories;
-using DocFlow.API.Services.Auth;
 using DocFlow.API.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
