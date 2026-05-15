@@ -7,21 +7,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.72" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.4">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Controllers\" />
-	</ItemGroup>
-
-
-	<ItemGroup>
-		<ProjectReference Include="..\DocFlow.Infrastructure\DocFlow.Infrastructure.csproj" />
-		<ProjectReference Include="..\DocFlow.Domain\DocFlow.Domain.csproj" />
 	</ItemGroup>
 
 </Project>
