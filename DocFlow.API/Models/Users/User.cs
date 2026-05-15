@@ -14,7 +14,8 @@ namespace DocFlow.API.Users
 		private User() { }
 		public User(string name, string surname, string email, string passwordHash)
 		{
-			SetGeneral(name, surname, email, passwordHash);
+			SetGeneral(name, surname, email);
+			SetPassword(passwordHash);
 		}
 		private void SetName(string name)
 		{
@@ -30,11 +31,17 @@ namespace DocFlow.API.Users
 
 			Surname = surname;
 		}
-		public void SetGeneral(string name, string surname, string email, string passwordHash)
+		public void SetGeneral(string name, string surname, string email)
 		{
 			SetName(name);
 			SetSurname(surname);
 			Email = new(email);
+		}
+		public void SetPassword(string passwordHash)
+		{
+			if (string.IsNullOrWhiteSpace(passwordHash))
+				throw new ArgumentException("Хэш пароля не может быть пустым");
+
 			PasswordHash = passwordHash;
 		}
 	}

@@ -1,8 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using DocFlow.API.Users;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static DocFlow.API.Services.Auth.JwtService;
 
 namespace DocFlow.API.Services.Auth
 {
@@ -13,8 +13,8 @@ namespace DocFlow.API.Services.Auth
 
 		public JwtService(IConfiguration config)
 		{
-			_secretKey = config["Jwt:SecretKey"]!;
-			_expirationMinutes = int.Parse(config["Jwt:ExpirationMinutes"] ?? "60");
+			_secretKey = config["JwtSettings:SecretKey"]!;
+			_expirationMinutes = int.Parse(config["JwtSettings:ExpirationMinutes"] ?? "60");
 		}
 
 		public string GenerateToken(int userId, string email)
@@ -61,6 +61,18 @@ namespace DocFlow.API.Services.Auth
 			{
 				return null;
 			}
+		}
+	}
+	public static class ClaimsPrincipalExtensions
+	{
+		public static int GetUserId(this ClaimsPrincipal user)
+		{
+			string? value = user.FindFirst("userId")?.Value;
+
+			if (value == null)
+				throw new ArgumentException("Не удалось получить userId из claims");
+
+			return int.Parse(value);
 		}
 	}
 }
