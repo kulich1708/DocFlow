@@ -38,7 +38,7 @@ namespace DocFlow.API.Controllers
 			return NoContent();
 		}
 		[Authorize]
-		[HttpPost("{id}/change-general-info")]
+		[HttpPost("{id}/general-info")]
 		public async Task<ActionResult> ChangeGeneralInfo(int id, [FromBody] DocumentGeneralInfoDTO dto)
 		{
 			int userId = User.GetUserIdOrThrow();
@@ -47,6 +47,19 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.ChangeGeneralInfo(dto.Name, dto.CategoryId, dto.IsPrivate);
+
+			return NoContent();
+		}
+		[Authorize]
+		[HttpPost("{id}/draft")]
+		public async Task<ActionResult> SaveDraft(int id, [FromBody] int versionId)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(id);
+			if (userId != document.AuthorId)
+				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
+			document.CreateDraftFromVersion(versionId);
 
 			return NoContent();
 		}
@@ -76,7 +89,7 @@ namespace DocFlow.API.Controllers
 			return NoContent();
 		}
 		[Authorize]
-		[HttpPost("{id}/version/add")]
+		[HttpPost("{id}/versions")]
 		public async Task<ActionResult> AddVersion(int id)
 		{
 			int userId = User.GetUserIdOrThrow();
@@ -85,6 +98,18 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.AddVersion();
+			return NoContent();
+		}
+		[Authorize]
+		[HttpDelete("{documentId}/versions/{versionId}")]
+		public async Task<ActionResult> DeleteVersion(int documentId, int versionId)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(documentId);
+			if (userId != document.AuthorId)
+				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
+			document.DeleteVersion(versionId);
 			return NoContent();
 		}
 	}
