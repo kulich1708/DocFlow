@@ -64,12 +64,27 @@ namespace DocFlow.API
 				{
 					Title = $"{_name} API",
 				});
+				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+				{
+					Name = "Authorization",
+					Type = SecuritySchemeType.ApiKey,
+					Scheme = "Bearer",
+					BearerFormat = "JWT",
+					In = ParameterLocation.Header,
+					Description = "Введите токен в формате: Bearer ваш_токен"
+				});
+				options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
+				{
+					[new OpenApiSecuritySchemeReference("Bearer", doc)] = new List<string>()
+				});
 			});
 
 			services.AddScoped<JwtService>();
 			services.AddScoped<UnitOfWork>();
 			services.AddScoped<PasswordService>();
 			services.AddScoped<UserRepository>();
+			services.AddScoped<DocumentRepository>();
+			services.AddScoped<CategoryRepository>();
 		}
 
 		private static async Task ConfigureMiddleware(WebApplication app)
