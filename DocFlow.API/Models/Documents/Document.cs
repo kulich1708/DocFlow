@@ -9,6 +9,7 @@ namespace DocFlow.API.Documents
 	{
 		private readonly List<DocumentVersion> _versions = new();
 
+		public string Name { get; private set; }
 		public int? AuthorId { get; private set; }
 		public int CategoryId { get; private set; }
 		public bool IsPrivate { get; private set; }
@@ -21,6 +22,13 @@ namespace DocFlow.API.Documents
 			SetAuthor(authorId);
 			SetCategory(categoryId);
 			SetPrivate(isPrivate);
+		}
+		public void SetName(string name)
+		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Имя документа не может быть пустым");
+
+			Name = name;
 		}
 		public void SetAuthor(int? authorId)
 		{
