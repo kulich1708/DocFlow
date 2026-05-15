@@ -11,8 +11,9 @@ namespace DocFlow.API.Persistence.Repositories
 	{
 		private readonly AppDbContext _context = context;
 
-		public async Task<Document?> GetAsync(int id)
-			=> await _context.Documents.FirstOrDefaultAsync(d => d.Id == id);
+		public async Task<Document> GetAsync(int id)
+			=> await _context.Documents.FirstOrDefaultAsync(d => d.Id == id)
+			?? throw new InvalidOperationException($"Документ с {id} не найден");
 		public async Task<List<Document>> GetByCategoriesAsync(List<int> categoriesId)
 			=> await _context.Documents.Where(d => categoriesId.Contains(d.CategoryId)).ToListAsync();
 

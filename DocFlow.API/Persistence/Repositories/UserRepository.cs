@@ -13,8 +13,12 @@ namespace DocFlow.API.Persistence.Repositories
 
 		public async Task<List<User>> GetAllAsync()
 			=> await _context.Users.ToListAsync();
-		public async Task<User?> GetAsync(int id)
-			=> await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+		public async Task<User> GetAsync(int id)
+			=> await _context.Users.FirstOrDefaultAsync(u => u.Id == id)
+			?? throw new InvalidOperationException($"Пользователь с айди {id} не найден");
+		public async Task<User> GetByEmailAsync(string email)
+			=> await _context.Users.FirstOrDefaultAsync(u => u.Email.Value == email)
+			?? throw new InvalidOperationException($"Пользователь с почтой {email} не найден");
 
 	}
 }
