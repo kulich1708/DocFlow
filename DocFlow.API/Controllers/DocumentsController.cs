@@ -45,8 +45,46 @@ namespace DocFlow.API.Controllers
 			Document document = await _documentRepository.GetAsync(id);
 			if (userId != document.AuthorId)
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
 			document.ChangeGeneralInfo(dto.Name, dto.CategoryId, dto.IsPrivate);
 
+			return NoContent();
+		}
+		[Authorize]
+		[HttpPost("{id}/draft/save")]
+		public async Task<ActionResult> SaveDraft(int id, [FromBody] string content)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(id);
+			if (userId != document.AuthorId)
+				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
+			document.SaveDraft(content);
+
+			return NoContent();
+		}
+		[Authorize]
+		[HttpPost("{id}/draft/reset")]
+		public async Task<ActionResult> ResetDraft(int id)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(id);
+			if (userId != document.AuthorId)
+				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
+			document.ResetDraft();
+			return NoContent();
+		}
+		[Authorize]
+		[HttpPost("{id}/version/add")]
+		public async Task<ActionResult> AddVersion(int id)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(id);
+			if (userId != document.AuthorId)
+				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+
+			document.AddVersion();
 			return NoContent();
 		}
 	}
