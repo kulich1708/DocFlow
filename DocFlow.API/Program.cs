@@ -1,11 +1,17 @@
 using DocFlow.API.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 namespace DocFlow.API
 {
 	public class Program
 	{
+
+		private readonly static string _version = "v1";
+		private readonly static string _name = "Doc Flow";
 		public static async Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
@@ -27,22 +33,34 @@ namespace DocFlow.API
 		{
 			var services = builder.Services;
 
-			//services.AddControllers()
-			//	.AddJsonOptions(options =>
-			//	{
-			//		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-			//	});
+			var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+			var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+			.AddJwtBearer(options =>
+			{
+				options.RequireHttpsMetadata = true;
+				options.SaveToken = true;
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateIssuer = false,
+					ValidateAudience = false,
+					ValidateLifetime = true,
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+					ClockSkew = TimeSpan.Zero
+				};
+			});
 
-
+			services.AddAuthorization();
 			services.AddControllers();
 			services.AddEndpointsApiExplorer();
 
 			services.AddSwaggerGen(options =>
 			{
-				options.SwaggerDoc("", new OpenApiInfo
+				options.SwaggerDoc(_version, new OpenApiInfo
 				{
-					Title = "Doc Flow API",
+					Title = $"{_name} API",
 				});
 			});
 		}
@@ -53,15 +71,13 @@ namespace DocFlow.API
 			var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 			await db.Database.MigrateAsync();
 
-			var version = "v1";
-
 			app.UseSwagger();
 
 			app.UseSwaggerUI(options =>
 			{
 				options.SwaggerEndpoint(
-					$"/swagger/{version}/swagger.json",
-					$"Sports Stats API {version}");
+					$"/swagger/{_version}/swagger.json",
+					$"{_name} API {_version}");
 
 				options.RoutePrefix = "swagger";
 			});
@@ -71,6 +87,7 @@ namespace DocFlow.API
 			app.UseStaticFiles();
 
 			app.UseHttpsRedirection();
+			app.UseAuthentication();
 			app.UseAuthorization();
 			app.MapControllers();
 		}
