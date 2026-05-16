@@ -18,14 +18,14 @@ namespace DocFlow.API.Controllers
 		private readonly UserRepository _userRepository = userRepository;
 		private readonly DocumentRepository _documentRepository = documentRepository;
 		[HttpGet("{id}")]
-		public async Task<ActionResult<UserDTO>> Get(int id)
+		public async Task<ActionResult<UserDTO>> GetUserById(int id)
 		{
 			User user = await _userRepository.GetAsync(id);
 			UserDTO userDTO = Mapper.ToUserDTO(user);
 			return Ok(userDTO);
 		}
 		[HttpGet("{id}/documents")]
-		public async Task<ActionResult<List<DocumentDTO>>> GetDocuments(int id)
+		public async Task<ActionResult<List<DocumentDTO>>> GetUserDocuments(int id)
 		{
 			int? authorizationUserId = User.GetUserId();
 

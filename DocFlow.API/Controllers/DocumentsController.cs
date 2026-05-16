@@ -19,7 +19,7 @@ namespace DocFlow.API.Controllers
 		private readonly UnitOfWork _unitOfWork = unitOfWork;
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<DocumentDTO>> Get(int id)
+		public async Task<ActionResult<DocumentDTO>> GetDocumentById(int id)
 		{
 			bool isMe = IsMe(id);
 			Document document = await _documentRepository.GetAsync(id);
@@ -30,7 +30,7 @@ namespace DocFlow.API.Controllers
 		}
 
 		[HttpGet("{documentId}/versions/{versionId}")]
-		public async Task<ActionResult<DocumentWithVersionDTO>> GetVersions(int documentId, int versionId)
+		public async Task<ActionResult<DocumentWithVersionDTO>> GetDocumentVersion(int documentId, int versionId)
 		{
 			Document document = await _documentRepository.GetAsync(documentId);
 			DocumentVersion version = document.GetDocumentVersion(versionId);
@@ -39,7 +39,7 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> Create([FromBody] DocumentCreateDTO dto)
+		public async Task<ActionResult> CreateDocument([FromBody] DocumentCreateDTO dto)
 		{
 			int userId = User.GetUserIdOrThrow();
 			Document document = new(dto.Name, userId, dto.CategoryId, dto.IsPrivate);
@@ -51,7 +51,7 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost("{id}/general-info")]
-		public async Task<ActionResult> ChangeGeneralInfo(int id, [FromBody] DocumentGeneralInfoDTO dto)
+		public async Task<ActionResult> UpdateDocumentGeneralInfo(int id, [FromBody] DocumentGeneralInfoDTO dto)
 			=> await ExecuteAsOwner(id, document => document.ChangeGeneralInfo(dto.Name, dto.CategoryId, dto.IsPrivate));
 
 		[Authorize]
@@ -61,27 +61,27 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost("{id}/draft/save")]
-		public async Task<ActionResult> SaveDraft(int id, [FromBody] string content)
+		public async Task<ActionResult> SaveDocumentDraft(int id, [FromBody] string content)
 			=> await ExecuteAsOwner(id, document => document.SaveDraft(content));
 
 		[Authorize]
 		[HttpPost("{id}/draft/reset")]
-		public async Task<ActionResult> ResetDraft(int id)
+		public async Task<ActionResult> ResetDocumentDraft(int id)
 			=> await ExecuteAsOwner(id, document => document.ResetDraft());
 
 		[Authorize]
 		[HttpPost("{id}/versions")]
-		public async Task<ActionResult> AddVersion(int id)
+		public async Task<ActionResult> AddDocumentVersion(int id)
 			=> await ExecuteAsOwner(id, document => document.AddVersion());
 
 		[Authorize]
 		[HttpDelete("{documentId}/versions/{versionId}")]
-		public async Task<ActionResult> DeleteVersion(int documentId, int versionId)
+		public async Task<ActionResult> DeleteDocumentVersion(int documentId, int versionId)
 			=> await ExecuteAsOwner(documentId, document => document.DeleteVersion(versionId));
 
 		[Authorize]
 		[HttpDelete("{documentId}")]
-		public async Task<ActionResult> Delete(int documentId)
+		public async Task<ActionResult> DeleteDocument(int documentId)
 		{
 			(Document? document, ActionResult? result) = await Test(documentId);
 			if (result != null)
