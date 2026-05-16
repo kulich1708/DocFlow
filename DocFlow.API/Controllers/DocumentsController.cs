@@ -25,13 +25,16 @@ namespace DocFlow.API.Controllers
 			bool isMe = authorizationUserId.HasValue && authorizationUserId.Value == id;
 			Document document = await _documentRepository.GetAsync(id);
 
-			return Ok(Mapper.ToDTO(document, isMe));
+			return Ok(isMe ?
+				Mapper.ToDocumentDTO(document, isMe) :
+				Mapper.ToDocumentForAnotherUserDTO(document, isMe));
 		}
 		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> Create([FromBody] DocumentCreateDTO dto)
 		{
-			Document document = new(dto.Name, dto.AuthorId, dto.CategoryId, dto.IsPrivate);
+			int userId = User.GetUserIdOrThrow();
+			Document document = new(dto.Name, userId, dto.CategoryId, dto.IsPrivate);
 			_unitOfWork.Add(document);
 			await _unitOfWork.SaveChangesAsync();
 
@@ -47,12 +50,13 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.ChangeGeneralInfo(dto.Name, dto.CategoryId, dto.IsPrivate);
+			await _unitOfWork.SaveChangesAsync();
 
 			return NoContent();
 		}
 		[Authorize]
 		[HttpPost("{id}/draft")]
-		public async Task<ActionResult> SaveDraft(int id, [FromBody] int versionId)
+		public async Task<ActionResult> CreateDraftFromVersion(int id, [FromBody] int versionId)
 		{
 			int userId = User.GetUserIdOrThrow();
 			Document document = await _documentRepository.GetAsync(id);
@@ -60,6 +64,7 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.CreateDraftFromVersion(versionId);
+			await _unitOfWork.SaveChangesAsync();
 
 			return NoContent();
 		}
@@ -73,6 +78,7 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.SaveDraft(content);
+			await _unitOfWork.SaveChangesAsync();
 
 			return NoContent();
 		}
@@ -86,6 +92,8 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.ResetDraft();
+			await _unitOfWork.SaveChangesAsync();
+
 			return NoContent();
 		}
 		[Authorize]
@@ -98,6 +106,8 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.AddVersion();
+			await _unitOfWork.SaveChangesAsync();
+
 			return NoContent();
 		}
 		[Authorize]
@@ -110,7 +120,20 @@ namespace DocFlow.API.Controllers
 				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
 
 			document.DeleteVersion(versionId);
+			await _unitOfWork.SaveChangesAsync();
+
 			return NoContent();
+		}
+		[HttpGet("{documentId}/versions/{versionId}")]
+		public async Task<ActionResult<DocumentWithVersionDTO>> GetVersions(int documentId, int versionId)
+		{
+			Document document = await _documentRepository.GetAsync(documentId);
+			DocumentVersion version = document.GetDocumentVersion(versionId);
+
+			int? authorizationUserId = User.GetUserId();
+			bool isMe = authorizationUserId.HasValue && authorizationUserId.Value == document.AuthorId;
+
+			return Ok(Mapper.ToDocumentWithVersionDTO(document, version, isMe));
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace DocFlow.API.Documents
 			if (!IsChanged || lastDocumentVersion != null && lastDocumentVersion.Content.Value == Draft.Content.Value)
 				throw new ArgumentException("Текст этой версии не отличается от предыдущей");
 
-			int version = lastDocumentVersion?.Version ?? 1;
+			int version = lastDocumentVersion?.Version ?? 0 + 1;
 			DocumentVersion documentVersion = new(version, Draft.Content.Value);
 			_versions.Add(documentVersion);
 
@@ -75,10 +75,7 @@ namespace DocFlow.API.Documents
 		}
 		public void CreateDraftFromVersion(int versionId)
 		{
-			var version = _versions.FirstOrDefault(v => v.Id == versionId);
-			if (version == null)
-				throw new ArgumentException("Документ не содержит такой версии");
-
+			var version = GetDocumentVersion(versionId);
 			Draft.Update(version.Content, version.Content);
 			IsChanged = false;
 		}
@@ -93,6 +90,13 @@ namespace DocFlow.API.Documents
 			SetPrivate(isPrivate);
 			if (categoryId.HasValue)
 				SetCategory(categoryId.Value);
+		}
+		public DocumentVersion GetDocumentVersion(int versionId)
+		{
+			var version = _versions.FirstOrDefault(v => v.Id == versionId);
+			if (version == null)
+				throw new ArgumentException("Документ не содержит такой версии");
+			return version;
 		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();
