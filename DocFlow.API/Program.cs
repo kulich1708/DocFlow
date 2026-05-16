@@ -64,6 +64,7 @@ namespace DocFlow.API
 				options.SwaggerDoc(_version, new OpenApiInfo
 				{
 					Title = $"{_name} API",
+					Version = _version
 				});
 				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 				{

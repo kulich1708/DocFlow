@@ -1,0 +1,15 @@
+{
+  "runtime": "Net100",
+  "documentGenerator": {
+    "aspNetCoreToOpenApi": {
+      "project": "DocFlow.API.csproj",
+      "documentName": "v1"
+    }
+  },
+  "codeGenerators": {
+    "openApiToTypeScriptClient": {
+      "className": "ApiClient",
+      "output": "../client/src/api/api-client.ts"
+    }
+  }
+}
