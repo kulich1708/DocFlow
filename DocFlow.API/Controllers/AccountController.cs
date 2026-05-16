@@ -24,7 +24,7 @@ namespace DocFlow.API.Controllers
 		private readonly DocumentRepository _documentRepository = documentRepository;
 
 		[HttpPost("register")]
-		public async Task<ActionResult<string>> Register([FromBody] UserRegistrateDTO dto)
+		public async Task<ActionResult<string>> RegisterUser([FromBody] UserRegistrateDTO dto)
 		{
 			User user = new(dto.Name, dto.Surname, dto.Email, _passwordService.HashPassword(dto.Password));
 			_unitOfWork.Add(user);
@@ -34,7 +34,7 @@ namespace DocFlow.API.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<ActionResult> Login([FromBody] UserLoginDTO dto)
+		public async Task<ActionResult> LoginUser([FromBody] UserLoginDTO dto)
 		{
 			User user = await _userRepository.GetByEmailAsync(dto.Email);
 			if (user == null)
@@ -48,7 +48,7 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost("change-password")]
-		public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+		public async Task<ActionResult> ChangeUserPassword([FromBody] ChangePasswordDTO dto)
 		{
 			int userId = User.GetUserIdOrThrow();
 			User user = await _userRepository.GetAsync(userId);
@@ -62,7 +62,7 @@ namespace DocFlow.API.Controllers
 		}
 		[Authorize]
 		[HttpDelete]
-		public async Task<ActionResult> DeleteAccount()
+		public async Task<ActionResult> DeleteUserAccount()
 		{
 			int userId = User.GetUserIdOrThrow();
 			await _documentRepository.DeleteAuthorAsync(userId);
