@@ -9,18 +9,26 @@ namespace DocFlow.API.Documents
 	{
 		private readonly List<DocumentVersion> _versions = new();
 
+		public string Name { get; private set; }
 		public int? AuthorId { get; private set; }
-		public int CategoryId { get; private set; }
+		public int? CategoryId { get; private set; }
 		public bool IsPrivate { get; private set; }
-		public DocumentDraft Draft { get; private set; } = new("");
+		public DocumentDraft Draft { get; private set; }
 		public bool IsChanged { get; private set; } = false;
 		public IReadOnlyList<DocumentVersion> Versions => _versions;
 
-		public Document(int? authorId, int categoryId, bool isPrivate)
+		public Document(string name, int? authorId = null, int? categoryId = null, bool isPrivate = true)
 		{
+			Draft = new(new(""));
 			SetAuthor(authorId);
-			SetCategory(categoryId);
-			SetPrivate(isPrivate);
+			ChangeGeneralInfo(name, categoryId, isPrivate);
+		}
+		public void SetName(string name)
+		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Имя документа не может быть пустым");
+
+			Name = name;
 		}
 		public void SetAuthor(int? authorId)
 		{
@@ -42,7 +50,7 @@ namespace DocFlow.API.Documents
 		{
 			if (content != Draft.Content.Value)
 				IsChanged = true;
-			Draft.Update(content);
+			Draft.Update(new(content));
 		}
 		public void AddVersion()
 		{
@@ -51,16 +59,44 @@ namespace DocFlow.API.Documents
 			if (!IsChanged || lastDocumentVersion != null && lastDocumentVersion.Content.Value == Draft.Content.Value)
 				throw new ArgumentException("Текст этой версии не отличается от предыдущей");
 
-			int version = lastDocumentVersion?.Version ?? 1;
+			int version = lastDocumentVersion?.Version ?? 0 + 1;
 			DocumentVersion documentVersion = new(version, Draft.Content.Value);
 			_versions.Add(documentVersion);
 
 			IsChanged = false;
 		}
+		public void DeleteVersion(int versionId)
+		{
+			var version = _versions.FirstOrDefault(v => v.Id == versionId);
+			if (version == null)
+				throw new ArgumentException("Документ не содержит такой версии");
+
+			_versions.Remove(version);
+		}
+		public void CreateDraftFromVersion(int versionId)
+		{
+			var version = GetDocumentVersion(versionId);
+			Draft.Update(version.Content, version.Content);
+			IsChanged = false;
+		}
 		public void ResetDraft()
 		{
-			Draft.Update(GetLastVersion()?.Content?.Value ?? "");
+			Draft.Update(Draft.InitialContent);
 			IsChanged = false;
+		}
+		public void ChangeGeneralInfo(string name, int? categoryId = null, bool isPrivate = false)
+		{
+			SetName(name);
+			SetPrivate(isPrivate);
+			if (categoryId.HasValue)
+				SetCategory(categoryId.Value);
+		}
+		public DocumentVersion GetDocumentVersion(int versionId)
+		{
+			var version = _versions.FirstOrDefault(v => v.Id == versionId);
+			if (version == null)
+				throw new ArgumentException("Документ не содержит такой версии");
+			return version;
 		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();

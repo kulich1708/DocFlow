@@ -30,11 +30,15 @@ namespace DocFlow.API.Persistence.DbContexts
 				.OwnsOne(d => d.Draft, draft =>
 				{
 					draft.Property(d => d.Content)
-					.HasColumnName("DraftContent")
-					.HasConversion(converterDocumentContent);
+						.HasColumnName("DraftContent")
+						.HasConversion(converterDocumentContent);
+
+					draft.Property(d => d.InitialContent)
+						.HasColumnName("DraftInitialContent")
+						.HasConversion(converterDocumentContent);
 
 					draft.Property(d => d.ModifiedAt)
-					.HasColumnName("DraftModifiedAt");
+						.HasColumnName("DraftModifiedAt");
 				});
 			modelBuilder.Entity<DocumentVersion>()
 				.Property(v => v.Content)

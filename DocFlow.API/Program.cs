@@ -1,11 +1,12 @@
-using DocFlow.API.Persistence.DbContexts;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
-using DocFlow.API.Persistence.Repositories;
+using DocFlow.API.App.Services;
 using DocFlow.API.App.Services.Auth;
+using DocFlow.API.Persistence.DbContexts;
+using DocFlow.API.Persistence.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using System.Text;
 
 namespace DocFlow.API
 {
@@ -103,6 +104,7 @@ namespace DocFlow.API
 
 				options.RoutePrefix = "swagger";
 			});
+			app.UseMiddleware<GlobalExceptionHandler>();
 
 
 			app.UseDefaultFiles();
