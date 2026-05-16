@@ -29,6 +29,14 @@ namespace DocFlow.API.Controllers
 				Mapper.ToDocumentForAnotherUserDTO(document, isMe));
 		}
 
+		[HttpGet("{documentId}/versions/{versionId}")]
+		public async Task<ActionResult<DocumentWithVersionDTO>> GetVersions(int documentId, int versionId)
+		{
+			Document document = await _documentRepository.GetAsync(documentId);
+			DocumentVersion version = document.GetDocumentVersion(versionId);
+			return Ok(Mapper.ToDocumentWithVersionDTO(document, version, IsMe(document.AuthorId)));
+		}
+
 		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> Create([FromBody] DocumentCreateDTO dto)
@@ -71,25 +79,37 @@ namespace DocFlow.API.Controllers
 		public async Task<ActionResult> DeleteVersion(int documentId, int versionId)
 			=> await ExecuteAsOwner(documentId, document => document.DeleteVersion(versionId));
 
-		[HttpGet("{documentId}/versions/{versionId}")]
-		public async Task<ActionResult<DocumentWithVersionDTO>> GetVersions(int documentId, int versionId)
+		[Authorize]
+		[HttpDelete("{documentId}")]
+		public async Task<ActionResult> Delete(int documentId)
 		{
-			Document document = await _documentRepository.GetAsync(documentId);
-			DocumentVersion version = document.GetDocumentVersion(versionId);
-			return Ok(Mapper.ToDocumentWithVersionDTO(document, version, IsMe(document.AuthorId)));
+			(Document? document, ActionResult? result) = await Test(documentId);
+			if (result != null)
+				return result;
+			await _documentRepository.DeleteAsync(documentId);
+			await _unitOfWork.SaveChangesAsync();
+			return NoContent();
 		}
 
 		private async Task<ActionResult> ExecuteAsOwner(int documentId, Action<Document> action)
 		{
-			int userId = User.GetUserIdOrThrow();
-			Document document = await _documentRepository.GetAsync(documentId);
-			if (userId != document.AuthorId)
-				return Unauthorized(new { message = "Нет доступа для изменения этого документа" });
+			(Document? document, ActionResult? result) = await Test(documentId);
+			if (result != null)
+				return result;
 
-			action(document);
+			action(document!);
 			await _unitOfWork.SaveChangesAsync();
 
 			return NoContent();
+		}
+		private async Task<(Document?, ActionResult?)> Test(int documentId)
+		{
+			int userId = User.GetUserIdOrThrow();
+			Document document = await _documentRepository.GetAsync(documentId);
+
+			return userId == document.AuthorId ?
+				(document, null) :
+				(null, Unauthorized(new { message = "Нет доступа для изменения этого документа" }));
 		}
 
 		private bool IsMe(int? targetId)

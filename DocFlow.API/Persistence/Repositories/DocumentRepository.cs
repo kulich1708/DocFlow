@@ -1,5 +1,6 @@
 ﻿using DocFlow.API.Documents;
 using DocFlow.API.Persistence.DbContexts;
+using DocFlow.API.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace DocFlow.API.Persistence.Repositories
 			return await query.ToListAsync();
 		}
 
-		public async Task DeleteAuthor(int userId)
+		public async Task DeleteAuthorAsync(int userId)
 		{
 			await _context.Documents
 				.Where(d => d.AuthorId == userId && !d.IsPrivate)
@@ -35,6 +36,12 @@ namespace DocFlow.API.Persistence.Repositories
 			await _context.Documents
 				.Where(d => d.AuthorId == userId && d.IsPrivate)
 				.ExecuteDeleteAsync();
+		}
+		public async Task DeleteAsync(int id)
+		{
+			Document? document = await _context.Documents.FirstOrDefaultAsync(d => d.Id == id);
+			if (document != null)
+				_context.Remove(document);
 		}
 	}
 }

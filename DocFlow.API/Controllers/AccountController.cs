@@ -65,7 +65,7 @@ namespace DocFlow.API.Controllers
 		public async Task<ActionResult> DeleteAccount()
 		{
 			int userId = User.GetUserIdOrThrow();
-			await _documentRepository.DeleteAuthor(userId);
+			await _documentRepository.DeleteAuthorAsync(userId);
 			await _userRepository.DeleteAsync(userId);
 			await _unitOfWork.SaveChangesAsync();
 
