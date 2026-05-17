@@ -42,5 +42,7 @@ namespace DocFlow.API.Persistence.Repositories
 		public async Task<Category> GetAsync(int id)
 			=> await _context.Categories.FirstOrDefaultAsync(c => c.Id == id)
 			?? throw new InvalidOperationException($"Категория с айди {id} не найдена");
+		public async Task<List<Category>> GetAsync(List<int> ids)
+			=> await _context.Categories.Where(c => ids.Contains(c.Id)).ToListAsync();
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using DocFlow.API.App.DTOs;
+using DocFlow.API.Categories;
 using DocFlow.API.Documents;
 using DocFlow.API.Users;
 
@@ -9,30 +10,20 @@ namespace DocFlow.API.App.Mappers
 		public static UserDTO ToUserDTO(User user)
 			=> new(user.Id, user.Name, user.Surname, user.Email.Value);
 
-		public static DocumentGeneralInfoDTO ToDocumentGeneralInfoDTO(Document document)
-			=> new(document.Id, document.Name, document.AuthorId,
-				document.CategoryId, document.IsPrivate);
-		public static DocumentVersionGeneralInfoDTO ToVersionGeneralInfoDTO(DocumentVersion version)
-			=> new(version.Id, version.Version);
+		public static CategoryDTO ToCategoryDTO(Category category)
+			=> new(category.Id, category.Name, category.ParentCategoryId);
+
+		public static DocumentGeneralInfoDTO ToDocumentGeneralInfoDTO(Document document, User? user, Category? category, bool canEdit)
+			=> new(document.Id, document.Name, user == null ? null : Mapper.ToUserDTO(user),
+				document.CategoryId, category?.Name, document.IsPrivate, canEdit);
 		public static DocumentVersionDTO ToVersionDTO(DocumentVersion version)
 			=> new(version.Id, version.Version, version.Content.Value);
-		public static DocumentDraftDTO ToDocumentDraftDTO(DocumentDraft draft)
-			=> new(draft.Content.Value, draft.ModifiedAt);
-		public static DocumentDTO ToDocumentDTO(Document document, bool canEdit)
+		public static DocumentDTO ToDocumentDTO(Document document, User? user, Category? category, bool canEdit)
 			=> new(
-				ToDocumentGeneralInfoDTO(document),
-				document.Versions.Select(ToVersionGeneralInfoDTO).ToList(),
-				ToDocumentDraftDTO(document.Draft),
-				canEdit);
-		public static DocumentForAnotherUserDTO ToDocumentForAnotherUserDTO(Document document, bool canEdit)
-			=> new(
-				ToDocumentGeneralInfoDTO(document),
-				document.Versions.Select(ToVersionGeneralInfoDTO).ToList(),
-				canEdit);
-		public static DocumentWithVersionDTO ToDocumentWithVersionDTO(Document document, DocumentVersion version, bool canEdit)
-			=> new(
-				ToDocumentGeneralInfoDTO(document),
-				ToVersionDTO(version),
-				canEdit);
+				ToDocumentGeneralInfoDTO(document, user, category, canEdit),
+				document.Versions.Select(ToVersionDTO).ToList(),
+				canEdit ? document.Draft.Content.Value : null,
+				canEdit ? document.Draft.InitialContent.Value : null,
+				canEdit ? document.Draft.ModifiedAt : null);
 	}
 }

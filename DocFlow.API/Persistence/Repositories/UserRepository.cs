@@ -13,6 +13,8 @@ namespace DocFlow.API.Persistence.Repositories
 
 		public async Task<List<User>> GetAllAsync()
 			=> await _context.Users.ToListAsync();
+		public async Task<List<User>> GetAsync(List<int> ids)
+			=> await _context.Users.Where(u => ids.Contains(u.Id)).ToListAsync();
 		public async Task<User> GetAsync(int id)
 			=> await _context.Users.FirstOrDefaultAsync(u => u.Id == id)
 			?? throw new InvalidOperationException($"Пользователь с айди {id} не найден");
