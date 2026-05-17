@@ -1,8 +1,10 @@
 ﻿using DocFlow.API.App.DTOs;
 using DocFlow.API.App.Mappers;
+using DocFlow.API.App.Services;
 using DocFlow.API.App.Services.Auth;
 using DocFlow.API.Documents;
 using DocFlow.API.Persistence.Repositories;
+using DocFlow.API.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,28 +15,27 @@ namespace DocFlow.API.Controllers
 	[ApiController]
 	public class DocumentsController(
 		DocumentRepository documentRepository,
-		UnitOfWork unitOfWork) : ControllerBase
+		UnitOfWork unitOfWork,
+		DocumentDTOService documentDTOService,
+		UserRepository userRepository,
+		CategoryRepository categoryRepository) : ControllerBase
 	{
 		private readonly DocumentRepository _documentRepository = documentRepository;
 		private readonly UnitOfWork _unitOfWork = unitOfWork;
+		private readonly DocumentDTOService _documentDTOService = documentDTOService;
+		private readonly UserRepository _userRepository = userRepository;
+		private readonly CategoryRepository _categoryRepository = categoryRepository;
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult<DocumentDTO>> GetDocumentById(int id)
 		{
-			bool isMe = IsMe(id);
 			Document document = await _documentRepository.GetAsync(id);
+			bool isMe = IsCurrentUser(document.AuthorId);
 
-			return Ok(isMe ?
-				Mapper.ToDocumentDTO(document, isMe) :
-				Mapper.ToDocumentForAnotherUserDTO(document, isMe));
-		}
+			var user = document.AuthorId.HasValue ? await _userRepository.GetAsync(document.AuthorId.Value) : null;
+			var category = document.CategoryId.HasValue ? await _categoryRepository.GetAsync(document.CategoryId.Value) : null;
 
-		[HttpGet("{documentId}/versions/{versionId}")]
-		public async Task<ActionResult<DocumentWithVersionDTO>> GetDocumentVersion(int documentId, int versionId)
-		{
-			Document document = await _documentRepository.GetAsync(documentId);
-			DocumentVersion version = document.GetDocumentVersion(versionId);
-			return Ok(Mapper.ToDocumentWithVersionDTO(document, version, IsMe(document.AuthorId)));
+			return Ok(Mapper.ToDocumentDTO(document, user, category, isMe));
 		}
 
 		[Authorize]
@@ -112,7 +113,7 @@ namespace DocFlow.API.Controllers
 				(null, Unauthorized(new { message = "Нет доступа для изменения этого документа" }));
 		}
 
-		private bool IsMe(int? targetId)
+		private bool IsCurrentUser(int? targetId)
 		{
 			int? authorizationUserId = User.GetUserId();
 			return authorizationUserId.HasValue && targetId.HasValue && authorizationUserId.Value == targetId.Value;

@@ -93,7 +93,7 @@ namespace DocFlow.API
 				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 				{
 					Name = "Authorization",
-					Type = SecuritySchemeType.Http,
+					Type = SecuritySchemeType.ApiKey,
 					Scheme = "Bearer",
 					BearerFormat = "JWT",
 					In = ParameterLocation.Header,
@@ -125,6 +125,7 @@ namespace DocFlow.API
 			services.AddScoped<UserRepository>();
 			services.AddScoped<DocumentRepository>();
 			services.AddScoped<CategoryRepository>();
+			services.AddScoped<DocumentDTOService>();
 		}
 
 		private static async Task ConfigureMiddleware(WebApplication app)
