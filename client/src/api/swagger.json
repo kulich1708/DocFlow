@@ -151,7 +151,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Account": {
@@ -163,6 +168,100 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/Category/{id}/documents": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "GetDocumentsByCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "GetCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDTO"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -208,87 +307,6 @@
         }
       }
     },
-    "/api/Documents/{documentId}/versions/{versionId}": {
-      "get": {
-        "tags": [
-          "Documents"
-        ],
-        "operationId": "GetDocumentVersion",
-        "parameters": [
-          {
-            "name": "documentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "versionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DocumentWithVersionDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DocumentWithVersionDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DocumentWithVersionDTO"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Documents"
-        ],
-        "operationId": "DeleteDocumentVersion",
-        "parameters": [
-          {
-            "name": "documentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "versionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Documents": {
       "post": {
         "tags": [
@@ -330,7 +348,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{id}/general-info": {
@@ -385,7 +408,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{id}/draft": {
@@ -431,7 +459,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{id}/draft/save": {
@@ -474,7 +507,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{id}/draft/reset": {
@@ -498,7 +536,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{id}/versions": {
@@ -522,7 +565,50 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/Documents/{documentId}/versions/{versionId}": {
+      "delete": {
+        "tags": [
+          "Documents"
+        ],
+        "operationId": "DeleteDocumentVersion",
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Documents/{documentId}": {
@@ -546,7 +632,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/Users/{id}": {
@@ -615,7 +706,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DocumentDTO"
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
                   }
                 }
               },
@@ -623,7 +714,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DocumentDTO"
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
                   }
                 }
               },
@@ -631,7 +722,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DocumentDTO"
+                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
                   }
                 }
               }
@@ -643,6 +734,29 @@
   },
   "components": {
     "schemas": {
+      "CategoryDTO": {
+        "required": [
+          "id",
+          "name",
+          "parentId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChangePasswordDTO": {
         "required": [
           "currentPassword",
@@ -683,8 +797,9 @@
       },
       "DocumentDTO": {
         "required": [
-          "canEdit",
-          "draft",
+          "draftContent",
+          "draftInitialContent",
+          "draftModifiedAt",
           "generalInfo",
           "versions"
         ],
@@ -700,43 +815,31 @@
           "versions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DocumentVersionGeneralInfoDTO"
+              "$ref": "#/components/schemas/DocumentVersionDTO"
             }
           },
-          "draft": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DocumentDraftDTO"
-              }
-            ]
-          },
-          "canEdit": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DocumentDraftDTO": {
-        "required": [
-          "content",
-          "modifiedAt"
-        ],
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string"
-          },
-          "modifiedAt": {
+          "draftContent": {
             "type": "string",
-            "format": "date-time"
+            "nullable": true
+          },
+          "draftInitialContent": {
+            "type": "string",
+            "nullable": true
+          },
+          "draftModifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "DocumentGeneralInfoDTO": {
         "required": [
-          "authorId",
+          "author",
+          "canEdit",
           "categoryId",
+          "categoryName",
           "id",
           "isPrivate",
           "name"
@@ -750,9 +853,12 @@
           "name": {
             "type": "string"
           },
-          "authorId": {
-            "type": "integer",
-            "format": "int32",
+          "author": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserDTO"
+              }
+            ],
             "nullable": true
           },
           "categoryId": {
@@ -760,7 +866,14 @@
             "format": "int32",
             "nullable": true
           },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          },
           "isPrivate": {
+            "type": "boolean"
+          },
+          "canEdit": {
             "type": "boolean"
           }
         },
@@ -784,52 +897,6 @@
           },
           "content": {
             "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DocumentVersionGeneralInfoDTO": {
-        "required": [
-          "id",
-          "version"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "version": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DocumentWithVersionDTO": {
-        "required": [
-          "canEdit",
-          "generalInfo",
-          "version"
-        ],
-        "type": "object",
-        "properties": {
-          "generalInfo": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-              }
-            ]
-          },
-          "version": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DocumentVersionDTO"
-              }
-            ]
-          },
-          "canEdit": {
-            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -904,19 +971,17 @@
       "Bearer": {
         "type": "http",
         "description": "Введите токен в формате: Bearer ваш_токен",
-        "scheme": "Bearer",
+        "scheme": "bearer",
         "bearerFormat": "JWT"
       }
     }
   },
-  "security": [
-    {
-      "Bearer": [ ]
-    }
-  ],
   "tags": [
     {
       "name": "Account"
+    },
+    {
+      "name": "Category"
     },
     {
       "name": "Documents"
