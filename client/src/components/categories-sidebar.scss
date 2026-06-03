@@ -1,0 +1,39 @@
+.categories-sidebar {
+	min-width: 150px;
+	background: #fff;
+	border-right: 1px solid #e0e0e0;
+	height: 100vh;
+	overflow-y: auto;
+
+	&__title {
+		padding: 20px 16px;
+		margin: 0;
+		font-size: 18px;
+		font-weight: 600;
+		color: #333;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	&__list {
+		padding: 0px 5px 10px 5px;
+	}
+}
+
+.category-item {
+	font-size: 14px;
+	color: #333;
+	padding: 10px 0px 0px 0px;
+	& & {
+		padding-left: 12px;
+	}
+}
+
+.category-children {
+	.category-item {
+		padding-left: 52px;
+	}
+
+	.category-children .category-item {
+		padding-left: 72px;
+	}
+}
