@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../api/api";
 import "./register.scss"
 
@@ -60,6 +61,9 @@ export function Register() {
 				<button className="register__button" type="submit">
 					Зарегистрироваться
 				</button>
+				<p className="register__footer">
+					Уже есть аккаунт? <Link to="/login" className="register__link">Войти</Link>
+				</p>
 			</form>
 		</div>
 	);

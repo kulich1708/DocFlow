@@ -34,11 +34,17 @@ namespace DocFlow.API.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<ActionResult> LoginUser([FromBody] UserLoginDTO dto)
+		public async Task<ActionResult<string>> LoginUser([FromBody] UserLoginDTO dto)
 		{
-			User user = await _userRepository.GetByEmailAsync(dto.Email);
-			if (user == null)
+			User user;
+			try
+			{
+				user = await _userRepository.GetByEmailAsync(dto.Email);
+			}
+			catch (InvalidOperationException)
+			{
 				return Unauthorized(new { message = "Данный email не зарегестрирован" });
+			}
 
 			if (!_passwordService.VerifyPassword(dto.Password, user.PasswordHash))
 				return Unauthorized(new { message = "Неверный пароль" });

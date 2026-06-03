@@ -90,8 +90,8 @@ export const getDocFlowAPI = () => {
 
 	const loginUser = (
 		userLoginDTO?: UserLoginDTO,
-		options?: SecondParameter<typeof axiosInstance<void>>,) => {
-		return axiosInstance<void>(
+		options?: SecondParameter<typeof axiosInstance<string>>,) => {
+		return axiosInstance<string>(
 			{
 				url: `/api/Account/login`, method: 'POST',
 				headers: { 'Content-Type': 'application/json', },

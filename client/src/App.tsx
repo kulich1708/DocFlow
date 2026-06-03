@@ -3,7 +3,8 @@ import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from './api/api';
 import { DocumentList } from "./components/document-list";
 import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Login } from "./components/account/login";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
 	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
 	useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
 					</div>
 				} />
 				<Route path="/register" element={<Register />} />
+				<Route path="/login" element={<Login />} />
 			</Routes>
 		</BrowserRouter>
 	)
