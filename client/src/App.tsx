@@ -1,17 +1,38 @@
 import { useEffect, useState } from 'react';
-import { api, type UserDTO } from './api/api';
+import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from './api/api';
+import { DocumentList } from "./components/document-list";
+import { CategoriesSidebar } from "./components/categories-sidebar";
+import { Register } from "./components/account/register";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 function App() {
-	const [data, setData] = useState<UserDTO>();
-
+	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
 	useEffect(() => {
-		const fetchUsers = async () => {
-			setData(await api.getUserById);
+		const fetchDocuments = async () => {
+			setDocuments(await api.getUserDocuments(6));
 		}
-		fetchUsers();
+		fetchDocuments();
 	}, [])
-	console.log(data);
+	const [categories, setCategories] = useState<CategoryDTO[]>([]);
+	useEffect(() => {
+		const fetchCategories = async () => {
+			setCategories(await api.getCategories());
+		}
+		fetchCategories();
+	}, [])
 	return (
-		<p>{data?.email}</p>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={
+					<div className="main">
+						<div className="main__container">
+							<CategoriesSidebar categories={categories} />
+							<DocumentList documents={documents} />
+						</div>
+					</div>
+				} />
+				<Route path="/register" element={<Register />} />
+			</Routes>
+		</BrowserRouter>
 	)
 }
 
