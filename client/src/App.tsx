@@ -7,6 +7,7 @@ import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";
 import { UserCabinet } from "./components/user-cabinet/user-cabinet";
 import { Header } from "./components/header";
+import { DocumentVersionPage } from "./components/documents/document-version";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
 	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
@@ -41,6 +42,7 @@ function App() {
 				<Route path="/cabinet/settings" element={<UserCabinet />} />
 				<Route path="/users/:id" element={<UserCabinet />} />
 				<Route path="/documents/:id" element={<DocumentPage />} />
+				<Route path="/documents/:id/versions/:versionId" element={<DocumentVersionPage />} />
 			</Routes>
 		</BrowserRouter>
 	)

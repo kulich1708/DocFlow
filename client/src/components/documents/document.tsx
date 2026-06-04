@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { api, type DocumentDTO, type DocumentGeneralInfoDTO } from "../../api/api";
+import { DocumentInfo } from "./document-info";
 import { DocumentList } from "./document-list";
 import "./document.scss"
 
@@ -37,33 +38,10 @@ export function DocumentPage() {
 	if (!document) return null;
 
 	const { generalInfo } = document;
-	const authorName = generalInfo.author === null
-		? "Удалённый пользователь"
-		: `${generalInfo.author.name} ${generalInfo.author.surname}`;
 
 	return (
 		<div className="document-page">
-			<div className="document-page__info">
-				<h2 className="document-page__title">{generalInfo.name}</h2>
-				<p className="document-page__row">
-					<span className="document-page__label">Автор:</span>
-					{generalInfo.author === null ? (
-						<span>{authorName}</span>
-					) : (
-						<Link to={`/users/${generalInfo.author.id}`} className="document-page__link">
-							{authorName}
-						</Link>
-					)}
-				</p>
-				<p className="document-page__row">
-					<span className="document-page__label">Категория:</span>
-					<span>{generalInfo.categoryName ?? "Без категории"}</span>
-				</p>
-				<p className="document-page__row">
-					<span className="document-page__label">Доступ:</span>
-					<span>{generalInfo.isPrivate ? "Приватный" : "Публичный"}</span>
-				</p>
-			</div>
+			<DocumentInfo generalInfo={generalInfo} />
 
 			<h3 className="document-page__versions-title">Версии</h3>
 			<DocumentList documents={versionDocuments} documentId={documentId} />
