@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import "./login.scss"
+import { getApiError } from "../../utils/get-api-error";
 
 export function Login() {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -16,14 +17,9 @@ export function Login() {
 		try {
 			const token = await api.loginUser({ email, password });
 			localStorage.setItem("token", token);
+			navigate("/cabinet");
 		} catch (err) {
-			if (axios.isAxiosError(err) && err.response?.data) {
-				console.log(err);
-				const data = err.response.data;
-				if (data.message) {
-					setError(data.message);
-				}
-			}
+			setError(getApiError(err) ?? '');
 		}
 	}
 

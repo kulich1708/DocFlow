@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import "./register.scss"
+import { getApiError } from "../../utils/get-api-error";
 
 export function Register() {
+	const navigate = useNavigate();
 	const [name, setName] = useState("");
 	const [surname, setSurname] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log(await api.registerUser({ name, surname, email, password }));
+		setError("");
+
+		try {
+			const token = await api.registerUser({ name, surname, email, password });
+			localStorage.setItem("token", token);
+			navigate("/cabinet");
+		} catch (err) {
+			setError(getApiError(err) ?? '');
+		}
 	}
 
 	return (
@@ -58,6 +69,7 @@ export function Register() {
 						required
 					/>
 				</label>
+				{error && <p className="login__error">{error}</p>}
 				<button className="register__button" type="submit">
 					Зарегистрироваться
 				</button>
