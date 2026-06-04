@@ -4,6 +4,7 @@ import { DocumentList } from "./components/document-list";
 import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";
+import { UserCabinet } from "./components/user-cabinet/user-cabinet";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
 	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
@@ -33,6 +34,8 @@ function App() {
 				} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
+				<Route path="/cabinet" element={<UserCabinet />} />
+				<Route path="/users/:id" element={<UserCabinet />} />
 			</Routes>
 		</BrowserRouter>
 	)
