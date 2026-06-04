@@ -1,17 +1,9 @@
 .cabinet-documents {
 	&__title {
-		margin: 0;
+		margin: 0 0 16px;
 		font-size: 20px;
 		font-weight: 600;
 		color: #333;
-	}
-
-	&__header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 16px;
-		margin-bottom: 16px;
 	}
 
 	&__filter {
@@ -45,20 +37,4 @@
 		}
 	}
 
-	&__button {
-		padding: 10px 16px;
-		font-size: 14px;
-		font-weight: 600;
-		color: #fff;
-		text-decoration: none;
-		background: #333;
-		border: none;
-		border-radius: 8px;
-		cursor: pointer;
-		white-space: nowrap;
-
-		&:hover {
-			background: #555;
-		}
-	}
 }

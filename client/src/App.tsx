@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from './api/api';
-import { DocumentList } from "./components/document-list";
+import { DocumentList } from "./components/documents/document-list";
 import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";

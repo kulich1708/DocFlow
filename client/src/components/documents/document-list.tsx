@@ -1,4 +1,4 @@
-import type { DocumentGeneralInfoDTO } from "../api/api-client"
+import type { DocumentGeneralInfoDTO } from "../../api/api-client"
 import { DocumentCard } from "./document-card"
 import "./document-list.scss"
 

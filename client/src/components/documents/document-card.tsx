@@ -1,5 +1,5 @@
-import type { DocumentGeneralInfoDTO } from "../api/api-client";
-import preview from '../img/documentPreview.png';
+import type { DocumentGeneralInfoDTO } from "../../api/api-client";
+import preview from '../../img/documentPreview.png';
 import "./document-card.scss"
 
 type DocumentCardProps = {

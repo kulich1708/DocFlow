@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import type { DocumentGeneralInfoDTO } from "../../api/api";
-import { DocumentList } from "../document-list";
+import { DocumentList } from "../documents/document-list";
 import "./cabinet-documents.scss"
 
 type DocumentFilter = "all" | "public" | "private";
@@ -22,14 +21,7 @@ export function CabinetDocuments({ documents, isOwnCabinet }: CabinetDocumentsPr
 
 	return (
 		<div className="cabinet-documents">
-			<div className="cabinet-documents__header">
-				<h3 className="cabinet-documents__title">Документы</h3>
-				{isOwnCabinet && (
-					<Link to="/documents/create" className="cabinet-documents__button">
-						Создать документ
-					</Link>
-				)}
-			</div>
+			<h3 className="cabinet-documents__title">Документы</h3>
 
 			{isOwnCabinet && (
 				<div className="cabinet-documents__filter">
