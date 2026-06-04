@@ -5,6 +5,7 @@ import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";
 import { UserCabinet } from "./components/user-cabinet/user-cabinet";
+import { Header } from "./components/header";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
 	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
@@ -23,6 +24,7 @@ function App() {
 	}, [])
 	return (
 		<BrowserRouter>
+			<Header />
 			<Routes>
 				<Route path="/" element={
 					<div className="main">
