@@ -17,6 +17,7 @@ export function DocumentList({ documents, documentId }: DocumentListProps) {
 					to={documentId !== undefined
 						? `/documents/${documentId}/versions/${d.id}`
 						: `/documents/${d.id}`}
+					showAuthor={documentId === undefined}
 				/>
 			))}
 		</div>
