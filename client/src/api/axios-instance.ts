@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 
 const instance = axios.create({
@@ -8,7 +8,9 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
 	const token = localStorage.getItem('token');
 	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
+		const headers = AxiosHeaders.from(config.headers);
+		headers.set('Authorization', `Bearer ${token}`);
+		config.headers = headers;
 	}
 	return config;
 });
@@ -20,10 +22,6 @@ export const axiosInstance = async <T>(
 	const response = await instance({
 		...config,
 		...options,
-		headers: {
-			...config.headers,
-			...options?.headers,
-		},
 	});
 	return response.data;
 };

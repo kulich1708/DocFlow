@@ -35,6 +35,7 @@ function App() {
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/cabinet" element={<UserCabinet />} />
+				<Route path="/cabinet/settings" element={<UserCabinet />} />
 				<Route path="/users/:id" element={<UserCabinet />} />
 			</Routes>
 		</BrowserRouter>

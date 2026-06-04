@@ -1,101 +1,60 @@
 .user-cabinet {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px 10px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 24px 10px;
 
-    &__profile {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 32px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid #e0e0e0;
-    }
+	&__profile {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 32px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid #e0e0e0;
+	}
 
-    &__name {
-        margin: 0 0 8px;
-        font-size: 24px;
-        font-weight: 600;
-        color: #333;
-    }
+	&__name {
+		margin: 0 0 8px;
+		font-size: 24px;
+		font-weight: 600;
+		color: #333;
+	}
 
-    &__email {
-        margin: 0;
-        font-size: 14px;
-        color: #666;
-    }
+	&__email {
+		margin: 0;
+		font-size: 14px;
+		color: #666;
+	}
 
-    &__documents-title {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-        color: #333;
-    }
+	&__actions {
+		display: flex;
+		gap: 12px;
+	}
 
-    &__documents-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 16px;
-    }
+	&__button {
+		padding: 10px 16px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #fff;
+		text-decoration: none;
+		background: #333;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		white-space: nowrap;
 
-    &__filter {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
+		&:hover {
+			background: #555;
+		}
 
-    &__filter-item {
-        padding: 8px 14px;
-        font-size: 14px;
-        color: #666;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        cursor: pointer;
+		&_secondary {
+			color: #333;
+			background: #fff;
+			border: 1px solid #e0e0e0;
 
-        &:hover:not(&_active) {
-            border-color: #333;
-            color: #333;
-        }
-
-        &_active {
-            color: #fff;
-            background: #333;
-            border-color: #333;
-
-            &:hover {
-                cursor: default;
-            }
-        }
-    }
-
-    &__button {
-        padding: 10px 16px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #fff;
-        text-decoration: none;
-        background: #333;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        white-space: nowrap;
-
-        &:hover {
-            background: #555;
-        }
-
-        &_secondary {
-            color: #333;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-
-            &:hover {
-                background: #f5f5f5;
-            }
-        }
-    }
+			&:hover {
+				background: #f5f5f5;
+			}
+		}
+	}
 }

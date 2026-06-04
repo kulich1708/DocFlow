@@ -1,4 +1,5 @@
 ﻿using DocFlow.API.App.DTOs;
+using DocFlow.API.App.Mappers;
 using DocFlow.API.App.Services.Auth;
 using DocFlow.API.Persistence.Repositories;
 using DocFlow.API.Users;
@@ -26,7 +27,12 @@ namespace DocFlow.API.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult<string>> RegisterUser([FromBody] UserRegistrateDTO dto)
 		{
+			string? error = await CheckAccountForEmail(dto.Email);
+			if (error != null)
+				return BadRequest(new { message = error });
+
 			User user = new(dto.Name, dto.Surname, dto.Email, _passwordService.HashPassword(dto.Password));
+
 			_unitOfWork.Add(user);
 			await _unitOfWork.SaveChangesAsync();
 
@@ -53,6 +59,24 @@ namespace DocFlow.API.Controllers
 		}
 
 		[Authorize]
+		[HttpPut]
+		public async Task<ActionResult<UserDTO>> UpdateUser([FromBody] UserUpdateDTO dto)
+		{
+			int userId = User.GetUserIdOrThrow();
+			User user = await _userRepository.GetAsync(userId);
+
+			string? error = await CheckAccountForEmail(dto.Email, userId);
+			if (error != null)
+				return BadRequest(new { message = error });
+
+			user.SetGeneral(dto.Name, dto.Surname, dto.Email);
+
+			await _unitOfWork.SaveChangesAsync();
+
+			return Ok(Mapper.ToUserDTO(user));
+		}
+
+		[Authorize]
 		[HttpPost("change-password")]
 		public async Task<ActionResult> ChangeUserPassword([FromBody] ChangePasswordDTO dto)
 		{
@@ -76,6 +100,17 @@ namespace DocFlow.API.Controllers
 			await _unitOfWork.SaveChangesAsync();
 
 			return NoContent();
+		}
+		private async Task<string?> CheckAccountForEmail(string email, int? userId = null)
+		{
+			try
+			{
+				User otherUser = await _userRepository.GetByEmailAsync(email);
+				if (!userId.HasValue || otherUser.Id != userId)
+					return "Данный email уже зарегистрирован";
+			}
+			catch (InvalidOperationException) { }
+			return null;
 		}
 	}
 }
