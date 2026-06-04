@@ -1,0 +1,46 @@
+.document-page {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 24px 10px;
+
+	&__info {
+		margin-bottom: 32px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	&__title {
+		margin: 0 0 16px;
+		font-size: 24px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__row {
+		margin: 0 0 8px;
+		font-size: 14px;
+		color: #333;
+	}
+
+	&__label {
+		color: #666;
+		margin-right: 6px;
+	}
+
+	&__link {
+		color: #333;
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover {
+			color: #555;
+		}
+	}
+
+	&__versions-title {
+		margin: 0 0 16px;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+}

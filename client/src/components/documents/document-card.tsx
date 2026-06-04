@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
 import type { DocumentGeneralInfoDTO } from "../../api/api-client";
 import preview from '../../img/documentPreview.png';
 import "./document-card.scss"
 
 type DocumentCardProps = {
 	document: DocumentGeneralInfoDTO;
+	to: string;
 }
 
-export function DocumentCard({ document }: DocumentCardProps) {
+export function DocumentCard({ document, to }: DocumentCardProps) {
 	return (
-		<div className="document-card" >
+		<Link to={to} className="document-card">
 			<div className="document-card__preview">
 				<img src={preview} alt="фото документа" className="document-card__img" />
 			</div>
@@ -20,6 +22,6 @@ export function DocumentCard({ document }: DocumentCardProps) {
 						`${document.author?.name} ${document.author?.surname}`}
 				</p>
 			</div>
-		</div>
+		</Link>
 	);
 }

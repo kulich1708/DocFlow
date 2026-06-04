@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from './api/api';
 import { DocumentList } from "./components/documents/document-list";
+import { DocumentPage } from "./components/documents/document";
 import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";
@@ -39,6 +40,7 @@ function App() {
 				<Route path="/cabinet" element={<UserCabinet />} />
 				<Route path="/cabinet/settings" element={<UserCabinet />} />
 				<Route path="/users/:id" element={<UserCabinet />} />
+				<Route path="/documents/:id" element={<DocumentPage />} />
 			</Routes>
 		</BrowserRouter>
 	)
