@@ -13,7 +13,7 @@ export function HomePage() {
 	const fetchDocumentsPage = useCallback(
 		(page: number) => {
 			if (selectedCategoryId === null) {
-				return api.getAll({ Page: page, PageSize: 1 });
+				return api.getAll({ Page: page });
 			}
 			return api.getDocumentsByCategory(selectedCategoryId, { Page: page });
 		},
