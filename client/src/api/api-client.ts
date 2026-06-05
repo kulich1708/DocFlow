@@ -17,6 +17,10 @@ export interface ChangePasswordDTO {
   newPassword: string;
 }
 
+export interface DocumentAddVersionDTO {
+  name: string;
+}
+
 export interface DocumentCreateDTO {
   name: string;
   /** @nullable */
@@ -46,6 +50,7 @@ export interface DocumentGeneralInfoDTO {
 export interface DocumentVersionDTO {
   id: number;
   version: number;
+  name: string;
   content: string;
 }
 
@@ -220,9 +225,12 @@ const resetDocumentDraft = (
 
 const addDocumentVersion = (
     id: number,
- options?: SecondParameter<typeof axiosInstance<void>>,) => {
-      return axiosInstance<void>(
-      {url: `/api/Documents/${id}/versions`, method: 'POST'
+    documentAddVersionDTO?: DocumentAddVersionDTO,
+ options?: SecondParameter<typeof axiosInstance<number>>,) => {
+      return axiosInstance<number>(
+      {url: `/api/Documents/${id}/versions`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: documentAddVersionDTO
     },
       options);
     }

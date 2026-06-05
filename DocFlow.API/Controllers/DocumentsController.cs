@@ -72,8 +72,16 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost("{id}/versions")]
-		public async Task<ActionResult> AddDocumentVersion(int id)
-			=> await ExecuteAsOwner(id, document => document.AddVersion());
+		public async Task<ActionResult<int>> AddDocumentVersion(int id, [FromBody] DocumentAddVersionDTO dto)
+		{
+			(Document? document, ActionResult? result) = await Test(id);
+			if (result != null)
+				return result;
+
+			var version = document!.AddVersion(dto.Name);
+			await _unitOfWork.SaveChangesAsync();
+			return Ok(version.Id);
+		}
 
 		[Authorize]
 		[HttpDelete("{documentId}/versions/{versionId}")]

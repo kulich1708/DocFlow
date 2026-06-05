@@ -6,4 +6,5 @@
 	public record UserUpdateDTO(string Name, string Surname, string Email);
 	public record ChangeDocumentGeneralInfoDTO(string Name, int? CategoryId, bool IsPrivate);
 	public record DocumentCreateDTO(string Name, int? CategoryId, bool IsPrivate);
+	public record DocumentAddVersionDTO(string Name);
 }

@@ -17,7 +17,7 @@ namespace DocFlow.API.App.Mappers
 			=> new(document.Id, document.Name, user == null ? null : Mapper.ToUserDTO(user),
 				document.CategoryId, category?.Name, document.IsPrivate, canEdit);
 		public static DocumentVersionDTO ToVersionDTO(DocumentVersion version)
-			=> new(version.Id, version.Version, version.Content.Value);
+			=> new(version.Id, version.Version, version.Name, version.Content.Value);
 		public static DocumentDTO ToDocumentDTO(Document document, User? user, Category? category, bool canEdit)
 			=> new(
 				ToDocumentGeneralInfoDTO(document, user, category, canEdit),

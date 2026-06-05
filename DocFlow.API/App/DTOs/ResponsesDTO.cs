@@ -7,7 +7,7 @@
 		int Id, string Name, UserDTO? Author,
 		int? CategoryId, string? CategoryName, bool IsPrivate, bool CanEdit);
 	public record DocumentVersionDTO(
-		int Id, int Version, string Content);
+		int Id, int Version, string Name, string Content);
 	public record DocumentDTO(
 		DocumentGeneralInfoDTO GeneralInfo,
 		List<DocumentVersionDTO> Versions,

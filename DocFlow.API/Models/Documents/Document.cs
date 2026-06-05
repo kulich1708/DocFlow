@@ -52,18 +52,19 @@ namespace DocFlow.API.Documents
 				IsChanged = true;
 			Draft.Update(new(content));
 		}
-		public void AddVersion()
+		public DocumentVersion AddVersion(string name)
 		{
 			var lastDocumentVersion = GetLastVersion();
 
 			if (!IsChanged || lastDocumentVersion != null && lastDocumentVersion.Content.Value == Draft.Content.Value)
 				throw new ArgumentException("Текст этой версии не отличается от предыдущей");
 
-			int version = lastDocumentVersion?.Version ?? 0 + 1;
-			DocumentVersion documentVersion = new(version, Draft.Content.Value);
+			int version = (lastDocumentVersion?.Version ?? 0) + 1;
+			DocumentVersion documentVersion = new(version, name, Draft.Content.Value);
 			_versions.Add(documentVersion);
 
 			IsChanged = false;
+			return documentVersion;
 		}
 		public void DeleteVersion(int versionId)
 		{

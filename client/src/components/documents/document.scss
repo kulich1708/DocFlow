@@ -44,6 +44,108 @@
 		color: #333;
 	}
 
+	&__actions {
+		margin-top: 16px;
+	}
+
+	&__button {
+		display: inline-block;
+		padding: 10px 16px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #fff;
+		background: #333;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		text-decoration: none;
+
+		&:hover:not(:disabled) {
+			background: #555;
+		}
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		&_secondary {
+			color: #333;
+			background: #fff;
+			border: 1px solid #e0e0e0;
+
+			&:hover:not(:disabled) {
+				background: #f5f5f5;
+			}
+		}
+	}
+
+	&__draft-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		margin-bottom: 16px;
+	}
+
+	&__draft-title {
+		margin: 0;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__draft-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	&__error {
+		margin: 0 0 12px;
+		font-size: 14px;
+		color: #c0392b;
+	}
+
+	&__modal-title {
+		margin: 0 0 16px;
+		padding-right: 24px;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__modal-form {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	&__modal-field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	&__modal-input {
+		padding: 10px 12px;
+		font-size: 16px;
+		color: #333;
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		outline: none;
+
+		&:focus {
+			border-color: #333;
+		}
+	}
+
+	&__modal-actions {
+		display: flex;
+		gap: 8px;
+	}
+
 	.markdown-editor {
 		margin-top: 8px;
 	}

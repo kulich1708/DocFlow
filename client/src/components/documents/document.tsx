@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { api, type DocumentDTO, type DocumentGeneralInfoDTO } from "../../api/api";
 import { DocumentInfo } from "./document-info";
 import { DocumentList } from "./document-list";
@@ -26,7 +26,7 @@ export function DocumentPage() {
 		const { generalInfo } = document;
 		return document.versions.map(version => ({
 			id: version.id,
-			name: `Версия ${version.version}`,
+			name: version.name,
 			author: generalInfo.author,
 			categoryId: generalInfo.categoryId,
 			categoryName: generalInfo.categoryName,
@@ -41,7 +41,14 @@ export function DocumentPage() {
 
 	return (
 		<div className="document-page">
-			<DocumentInfo generalInfo={generalInfo} />
+			<DocumentInfo
+				generalInfo={generalInfo}
+				actions={generalInfo.canEdit ? (
+					<Link to={`/documents/${documentId}/draft`} className="document-page__button">
+						Черновик
+					</Link>
+				) : undefined}
+			/>
 
 			<h3 className="document-page__versions-title">Версии</h3>
 			<DocumentList documents={versionDocuments} documentId={documentId} />
