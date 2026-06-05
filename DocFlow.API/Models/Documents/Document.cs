@@ -68,11 +68,13 @@ namespace DocFlow.API.Documents
 		}
 		public void DeleteVersion(int versionId)
 		{
-			var version = _versions.FirstOrDefault(v => v.Id == versionId);
-			if (version == null)
-				throw new ArgumentException("Документ не содержит такой версии");
-
+			var version = GetDocumentVersion(versionId);
 			_versions.Remove(version);
+		}
+		public void ChangeVersionGeneralInfo(int versionId, string name)
+		{
+			var version = GetDocumentVersion(versionId);
+			version.SetName(name);
 		}
 		public void CreateDraftFromVersion(int versionId)
 		{
@@ -92,14 +94,12 @@ namespace DocFlow.API.Documents
 			if (categoryId.HasValue)
 				SetCategory(categoryId.Value);
 		}
-		public DocumentVersion GetDocumentVersion(int versionId)
-		{
-			var version = _versions.FirstOrDefault(v => v.Id == versionId);
-			if (version == null)
-				throw new ArgumentException("Документ не содержит такой версии");
-			return version;
-		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();
+		private DocumentVersion GetDocumentVersion(int versionId)
+		{
+			return _versions.FirstOrDefault(v => v.Id == versionId)
+				?? throw new ArgumentException("Документ не содержит такой версии");
+		}
 	}
 }

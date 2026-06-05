@@ -65,6 +65,10 @@ export interface DocumentDTO {
   draftModifiedAt: string | null;
 }
 
+export interface DocumentVersionUpdateGeneralInfoDTO {
+  name: string;
+}
+
 export interface UserLoginDTO {
   email: string;
   password: string;
@@ -183,7 +187,7 @@ const updateDocumentGeneralInfo = (
     documentGeneralInfoDTO?: DocumentGeneralInfoDTO,
  options?: SecondParameter<typeof axiosInstance<void>>,) => {
       return axiosInstance<void>(
-      {url: `/api/Documents/${id}/general-info`, method: 'POST',
+      {url: `/api/Documents/${id}/general-info`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: documentGeneralInfoDTO
     },
@@ -207,7 +211,7 @@ const saveDocumentDraft = (
     saveDocumentDraftBody?: string,
  options?: SecondParameter<typeof axiosInstance<void>>,) => {
       return axiosInstance<void>(
-      {url: `/api/Documents/${id}/draft/save`, method: 'POST',
+      {url: `/api/Documents/${id}/draft/save`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: saveDocumentDraftBody
     },
@@ -218,7 +222,7 @@ const resetDocumentDraft = (
     id: number,
  options?: SecondParameter<typeof axiosInstance<void>>,) => {
       return axiosInstance<void>(
-      {url: `/api/Documents/${id}/draft/reset`, method: 'POST'
+      {url: `/api/Documents/${id}/draft/reset`, method: 'PUT'
     },
       options);
     }
@@ -254,6 +258,19 @@ const deleteDocument = (
       options);
     }
 
+const changeDocumentVersionGeneralInfo = (
+    documentId: number,
+    versionId: number,
+    documentVersionUpdateGeneralInfoDTO?: DocumentVersionUpdateGeneralInfoDTO,
+ options?: SecondParameter<typeof axiosInstance<void>>,) => {
+      return axiosInstance<void>(
+      {url: `/api/Documents/${documentId}/versions/${versionId}/change-general-info`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: documentVersionUpdateGeneralInfoDTO
+    },
+      options);
+    }
+
 const getUserById = (
     id: number,
  options?: SecondParameter<typeof axiosInstance<UserDTO>>,) => {
@@ -272,7 +289,7 @@ const getUserDocuments = (
       options);
     }
 
-return {registerUser,loginUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getDocumentById,createDocument,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,getUserById,getUserDocuments}};
+return {registerUser,loginUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getDocumentById,createDocument,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,changeDocumentVersionGeneralInfo,getUserById,getUserDocuments}};
 export type RegisterUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['registerUser']>>>
 export type LoginUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['loginUser']>>>
 export type UpdateUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['updateUser']>>>
@@ -289,5 +306,6 @@ export type ResetDocumentDraftResult = NonNullable<Awaited<ReturnType<ReturnType
 export type AddDocumentVersionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['addDocumentVersion']>>>
 export type DeleteDocumentVersionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['deleteDocumentVersion']>>>
 export type DeleteDocumentResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['deleteDocument']>>>
+export type ChangeDocumentVersionGeneralInfoResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['changeDocumentVersionGeneralInfo']>>>
 export type GetUserByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getUserById']>>>
 export type GetUserDocumentsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getUserDocuments']>>>

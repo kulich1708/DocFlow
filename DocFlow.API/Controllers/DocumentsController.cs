@@ -51,7 +51,7 @@ namespace DocFlow.API.Controllers
 		}
 
 		[Authorize]
-		[HttpPost("{id}/general-info")]
+		[HttpPut("{id}/general-info")]
 		public async Task<ActionResult> UpdateDocumentGeneralInfo(int id, [FromBody] DocumentGeneralInfoDTO dto)
 			=> await ExecuteAsOwner(id, document => document.ChangeGeneralInfo(dto.Name, dto.CategoryId, dto.IsPrivate));
 
@@ -61,12 +61,12 @@ namespace DocFlow.API.Controllers
 			=> await ExecuteAsOwner(id, document => document.CreateDraftFromVersion(versionId));
 
 		[Authorize]
-		[HttpPost("{id}/draft/save")]
+		[HttpPut("{id}/draft/save")]
 		public async Task<ActionResult> SaveDocumentDraft(int id, [FromBody] string content)
 			=> await ExecuteAsOwner(id, document => document.SaveDraft(content));
 
 		[Authorize]
-		[HttpPost("{id}/draft/reset")]
+		[HttpPut("{id}/draft/reset")]
 		public async Task<ActionResult> ResetDocumentDraft(int id)
 			=> await ExecuteAsOwner(id, document => document.ResetDraft());
 
@@ -99,6 +99,11 @@ namespace DocFlow.API.Controllers
 			await _unitOfWork.SaveChangesAsync();
 			return NoContent();
 		}
+		[Authorize]
+		[HttpPut("{documentId}/versions/{versionId}/change-general-info")]
+		public async Task<ActionResult> ChangeDocumentVersionGeneralInfo(
+			int documentId, int versionId, [FromBody] DocumentVersionUpdateGeneralInfoDTO dto)
+			=> await ExecuteAsOwner(documentId, document => document.ChangeVersionGeneralInfo(versionId, dto.Name));
 
 		private async Task<ActionResult> ExecuteAsOwner(int documentId, Action<Document> action)
 		{

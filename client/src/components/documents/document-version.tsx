@@ -14,6 +14,7 @@ export function DocumentVersionPage() {
 
 	const [document, setDocument] = useState<DocumentDTO | null>(null);
 	const [draftError, setDraftError] = useState("");
+	const [nameError, setNameError] = useState("");
 	const [creatingDraft, setCreatingDraft] = useState(false);
 
 	useEffect(() => {
@@ -51,12 +52,34 @@ export function DocumentVersionPage() {
 		}
 	};
 
+	const handleVersionNameSave = async (name: string) => {
+		setNameError("");
+		try {
+			await api.changeDocumentVersionGeneralInfo(documentId, versionIdNum, { name });
+			setDocument(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					versions: prev.versions.map(v =>
+						v.id === versionIdNum ? { ...v, name } : v
+					),
+				};
+			});
+		} catch (err) {
+			const message = getApiError(err) ?? "Не удалось сохранить название версии";
+			setNameError(message);
+			throw new Error(message);
+		}
+	};
+
 	return (
 		<div className="document-page">
 			<DocumentInfo
 				generalInfo={generalInfo}
 				versionNumber={version.version}
 				versionName={version.name}
+				canEditVersionName={generalInfo.canEdit}
+				onVersionNameSave={handleVersionNameSave}
 				actions={generalInfo.canEdit ? (
 					<button
 						type="button"
@@ -68,6 +91,7 @@ export function DocumentVersionPage() {
 					</button>
 				) : undefined}
 			/>
+			{nameError && <p className="document-page__error">{nameError}</p>}
 			{draftError && <p className="document-page__error">{draftError}</p>}
 			<MarkdownEditor editable={false} value={version.content} />
 		</div>

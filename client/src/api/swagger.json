@@ -438,7 +438,7 @@
       }
     },
     "/api/Documents/{id}/general-info": {
-      "post": {
+      "put": {
         "tags": [
           "Documents"
         ],
@@ -549,7 +549,7 @@
       }
     },
     "/api/Documents/{id}/draft/save": {
-      "post": {
+      "put": {
         "tags": [
           "Documents"
         ],
@@ -597,7 +597,7 @@
       }
     },
     "/api/Documents/{id}/draft/reset": {
-      "post": {
+      "put": {
         "tags": [
           "Documents"
         ],
@@ -760,6 +760,75 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/Documents/{documentId}/versions/{versionId}/change-general-info": {
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "operationId": "ChangeDocumentVersionGeneralInfo",
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DocumentVersionUpdateGeneralInfoDTO"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DocumentVersionUpdateGeneralInfoDTO"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DocumentVersionUpdateGeneralInfoDTO"
+                  }
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -1044,6 +1113,18 @@
             "type": "string"
           },
           "content": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentVersionUpdateGeneralInfoDTO": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string"
           }
         },
