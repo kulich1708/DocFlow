@@ -10,6 +10,7 @@ type DocumentInfoProps = {
 	canEditVersionName?: boolean;
 	onVersionNameSave?: (name: string) => Promise<void>;
 	linkTitle?: boolean;
+	titleAction?: ReactNode;
 	actions?: ReactNode;
 };
 
@@ -36,6 +37,7 @@ export function DocumentInfo({
 	canEditVersionName,
 	onVersionNameSave,
 	linkTitle,
+	titleAction,
 	actions,
 }: DocumentInfoProps) {
 	const [isEditingName, setIsEditingName] = useState(false);
@@ -72,15 +74,18 @@ export function DocumentInfo({
 
 	return (
 		<div className="document-page__info">
-			<h2 className="document-page__title">
-				{linkTitle ?? versionNumber !== undefined ? (
-					<Link to={`/documents/${generalInfo.id}`} className="document-page__link">
-						{generalInfo.name}
-					</Link>
-				) : (
-					generalInfo.name
-				)}
-			</h2>
+			<div className="document-page__title-bar">
+				<h2 className="document-page__title">
+					{linkTitle ?? versionNumber !== undefined ? (
+						<Link to={`/documents/${generalInfo.id}`} className="document-page__link">
+							{generalInfo.name}
+						</Link>
+					) : (
+						generalInfo.name
+					)}
+				</h2>
+				{titleAction}
+			</div>
 			<p className="document-page__row">
 				<span className="document-page__label">Автор:</span>
 				{generalInfo.author === null ? (

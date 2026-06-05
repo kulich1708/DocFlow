@@ -9,8 +9,17 @@
 		border-bottom: 1px solid #e0e0e0;
 	}
 
+	&__title-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		margin-bottom: 16px;
+	}
+
 	&__title {
-		margin: 0 0 16px;
+		margin: 0;
 		font-size: 24px;
 		font-weight: 600;
 		color: #333;
@@ -85,6 +94,14 @@
 				background: #f5f5f5;
 			}
 		}
+
+		&_danger {
+			background: #c0392b;
+
+			&:hover:not(:disabled) {
+				background: #a93226;
+			}
+		}
 	}
 
 	&__draft-bar {
@@ -120,6 +137,12 @@
 		padding-right: 24px;
 		font-size: 20px;
 		font-weight: 600;
+		color: #333;
+	}
+
+	&__modal-text {
+		margin: 0 0 16px;
+		font-size: 14px;
 		color: #333;
 	}
 
