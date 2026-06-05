@@ -1,7 +1,38 @@
+.document-list {
+	width: 100%;
+
+	&__more {
+		display: flex;
+		justify-content: center;
+		margin-top: 24px;
+	}
+
+	&__more-button {
+		padding: 10px 20px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #fff;
+		background: #333;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+
+		&:hover:not(:disabled) {
+			background: #555;
+		}
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+	}
+}
+
 .document-grid {
 	display: grid;
 	align-content: start;
+	justify-content: start;
 	width: 100%;
-	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	gap: 20px;
 }

@@ -8,9 +8,18 @@ type DocumentFilter = "all" | "public" | "private";
 type CabinetDocumentsProps = {
 	documents: DocumentGeneralInfoDTO[];
 	isOwnCabinet: boolean;
+	hasMore?: boolean;
+	loadingMore?: boolean;
+	onLoadMore?: () => void;
 }
 
-export function CabinetDocuments({ documents, isOwnCabinet }: CabinetDocumentsProps) {
+export function CabinetDocuments({
+	documents,
+	isOwnCabinet,
+	hasMore,
+	loadingMore,
+	onLoadMore,
+}: CabinetDocumentsProps) {
 	const [filter, setFilter] = useState<DocumentFilter>("all");
 
 	const filteredDocuments = useMemo(() => {
@@ -49,7 +58,12 @@ export function CabinetDocuments({ documents, isOwnCabinet }: CabinetDocumentsPr
 				</div>
 			)}
 
-			<DocumentList documents={filteredDocuments} />
+			<DocumentList
+				documents={filteredDocuments}
+				hasMore={hasMore}
+				loadingMore={loadingMore}
+				onLoadMore={onLoadMore}
+			/>
 		</div>
 	);
 }

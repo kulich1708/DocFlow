@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { api, type DocumentGeneralInfoDTO, type UserDTO } from "../../api/api";
+import { api, type UserDTO } from "../../api/api";
+import { usePaginatedDocuments, emptyDocumentsPage } from "../../hooks/use-paginated-documents";
 import { getUserIdFromToken } from "../../utils/get-user-id-from-token";
 import { CabinetDocuments } from "./cabinet-documents";
 import { Settings } from "./settings";
@@ -16,9 +17,24 @@ export function UserCabinet() {
 	const isSettingsActive = location.pathname === "/cabinet/settings";
 	const userId = isCabinetRoute ? currentUserId : Number(id);
 	const isOwnCabinet = currentUserId !== null && userId === currentUserId;
+	const documentsResetKey = userId !== null && !Number.isNaN(userId) ? userId : null;
 
 	const [user, setUser] = useState<UserDTO | null>(null);
-	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
+
+	const fetchDocumentsPage = useCallback(
+		(page: number) => {
+			if (documentsResetKey === null) {
+				return Promise.resolve(emptyDocumentsPage);
+			}
+			return api.getUserDocuments(documentsResetKey, { Page: page });
+		},
+		[documentsResetKey],
+	);
+
+	const { documents, hasMore, loadingMore, loadMore } = usePaginatedDocuments(
+		fetchDocumentsPage,
+		documentsResetKey,
+	);
 
 	useEffect(() => {
 		if (isCabinetRoute && currentUserId === null) {
@@ -29,14 +45,13 @@ export function UserCabinet() {
 			navigate("/cabinet");
 			return;
 		}
-		if (userId === null || Number.isNaN(userId)) return;
+		if (documentsResetKey === null) return;
 
-		const fetchCabinet = async () => {
-			setUser(await api.getUserById(userId));
-			setDocuments((await api.getUserDocuments(userId)).items);
-		}
-		fetchCabinet();
-	}, [isCabinetRoute, isSettingsActive, isOwnCabinet, currentUserId, userId, navigate]);
+		const fetchUser = async () => {
+			setUser(await api.getUserById(documentsResetKey));
+		};
+		fetchUser();
+	}, [isCabinetRoute, isSettingsActive, isOwnCabinet, currentUserId, documentsResetKey, navigate]);
 
 	const handleLogout = () => {
 		localStorage.removeItem("token");
@@ -79,7 +94,13 @@ export function UserCabinet() {
 					}}
 				/>
 			) : (
-				<CabinetDocuments documents={documents} isOwnCabinet={isOwnCabinet} />
+				<CabinetDocuments
+					documents={documents}
+					isOwnCabinet={isOwnCabinet}
+					hasMore={hasMore}
+					loadingMore={loadingMore}
+					onLoadMore={loadMore}
+				/>
 			)}
 		</div>
 	);

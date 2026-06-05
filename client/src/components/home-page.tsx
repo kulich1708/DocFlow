@@ -1,12 +1,29 @@
-import { useEffect, useState } from "react";
-import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from "../api/api";
+import { useCallback, useEffect, useState } from "react";
+import { api, type CategoryDTO } from "../api/api";
+import { usePaginatedDocuments } from "../hooks/use-paginated-documents";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { DocumentList } from "./documents/document-list";
 
 export function HomePage() {
-	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
 	const [categories, setCategories] = useState<CategoryDTO[]>([]);
 	const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+
+	const documentsResetKey = selectedCategoryId ?? "all";
+
+	const fetchDocumentsPage = useCallback(
+		(page: number) => {
+			if (selectedCategoryId === null) {
+				return api.getAll({ Page: page, PageSize: 1 });
+			}
+			return api.getDocumentsByCategory(selectedCategoryId, { Page: page });
+		},
+		[selectedCategoryId],
+	);
+
+	const { documents, hasMore, loadingMore, loadMore } = usePaginatedDocuments(
+		fetchDocumentsPage,
+		documentsResetKey,
+	);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -14,18 +31,6 @@ export function HomePage() {
 		};
 		fetchCategories();
 	}, []);
-
-	useEffect(() => {
-		const fetchDocuments = async () => {
-			if (selectedCategoryId === null) {
-				setDocuments((await api.getAll()).items);
-				return;
-			}
-
-			setDocuments((await api.getDocumentsByCategory(selectedCategoryId)).items);
-		};
-		fetchDocuments();
-	}, [selectedCategoryId]);
 
 	return (
 		<div className="main">
@@ -37,7 +42,12 @@ export function HomePage() {
 					showEmptyOption
 					topOptionLabel="Все документы"
 				/>
-				<DocumentList documents={documents} />
+				<DocumentList
+					documents={documents}
+					hasMore={hasMore}
+					loadingMore={loadingMore}
+					onLoadMore={loadMore}
+				/>
 			</div>
 		</div>
 	);
