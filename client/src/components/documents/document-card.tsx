@@ -10,21 +10,29 @@ type DocumentCardProps = {
 }
 
 export function DocumentCard({ document, to, showAuthor = true }: DocumentCardProps) {
+	const authorName = document.author === null
+		? "Удалённый пользователь"
+		: `${document.author.name} ${document.author.surname}`;
+
 	return (
-		<Link to={to} className="document-card">
-			<div className="document-card__preview">
+		<article className="document-card">
+			<Link to={to} className="document-card__preview">
 				<img src={preview} alt="фото документа" className="document-card__img" />
-			</div>
-			<p className="document-card__title">{document.name}</p>
+			</Link>
+			<Link to={to} className="document-card__title">
+				{document.name}
+			</Link>
 			{showAuthor && (
 				<div className="document-card__author author-document-card">
-					<p className="author-document-card__name">
-						{document.author === null ?
-							"Удалённый пользователь" :
-							`${document.author?.name} ${document.author?.surname}`}
-					</p>
+					{document.author === null ? (
+						<p className="author-document-card__name">{authorName}</p>
+					) : (
+						<Link to={`/users/${document.author.id}`} className="author-document-card__link">
+							{authorName}
+						</Link>
+					)}
 				</div>
 			)}
-		</Link>
+		</article>
 	);
 }
