@@ -37,13 +37,12 @@ export function DocumentPage() {
 			categoryId: generalInfo.categoryId,
 			categoryName: generalInfo.categoryName,
 			isPrivate: generalInfo.isPrivate,
-			canEdit: generalInfo.canEdit,
 		}));
 	}, [document]);
 
 	if (!document) return null;
 
-	const { generalInfo } = document;
+	const { generalInfo, canEdit } = document;
 
 	const handleDeleteDocument = async () => {
 		setDeleteError("");
@@ -62,7 +61,7 @@ export function DocumentPage() {
 		<div className="document-page">
 			<DocumentInfo
 				generalInfo={generalInfo}
-				titleAction={generalInfo.canEdit ? (
+				titleAction={canEdit ? (
 					<div className="document-page__title-actions">
 						<Link
 							to={`/documents/${documentId}/edit`}
@@ -82,7 +81,7 @@ export function DocumentPage() {
 						</button>
 					</div>
 				) : undefined}
-				actions={generalInfo.canEdit ? (
+				actions={canEdit ? (
 					<Link to={`/documents/${documentId}/draft`} className="document-page__button">
 						Черновик
 					</Link>
@@ -91,7 +90,7 @@ export function DocumentPage() {
 
 			<div className="document-page__section-bar">
 				<h3 className="document-page__section-title">Версии</h3>
-				{generalInfo.canEdit && (
+				{canEdit && (
 					<Link to={`/documents/${documentId}/draft`} className="document-page__button">
 						Новая версия
 					</Link>

@@ -41,7 +41,7 @@ export function DocumentVersionPage() {
 		);
 	}
 
-	const { generalInfo } = document;
+	const { generalInfo, canEdit } = document;
 
 	const handleCreateDraft = async () => {
 		setDraftError("");
@@ -95,9 +95,9 @@ export function DocumentVersionPage() {
 				generalInfo={generalInfo}
 				versionNumber={version.version}
 				versionName={version.name}
-				canEditVersionName={generalInfo.canEdit}
+				canEditVersionName={canEdit}
 				onVersionNameSave={handleVersionNameSave}
-				titleAction={generalInfo.canEdit ? (
+				titleAction={canEdit ? (
 					<button
 						type="button"
 						className="document-page__button document-page__button_danger"
@@ -109,7 +109,7 @@ export function DocumentVersionPage() {
 						Удалить версию
 					</button>
 				) : undefined}
-				actions={generalInfo.canEdit ? (
+				actions={canEdit ? (
 					<button
 						type="button"
 						className="document-page__button"

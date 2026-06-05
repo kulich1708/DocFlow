@@ -26,6 +26,19 @@ namespace DocFlow.API.Controllers
 		private readonly UserRepository _userRepository = userRepository;
 		private readonly CategoryRepository _categoryRepository = categoryRepository;
 
+		[HttpGet]
+		public async Task<ActionResult<DocumentsDTOWithPagination>>
+			GetAll([FromQuery] PaginationDTO pagination)
+		{
+			(int page, int pageSize) = PaginationService.Get(pagination);
+			int? authorizationUserId = User.GetUserId();
+			var documents = await _documentRepository.GetAllAsync(authorizationUserId, page, pageSize);
+			var documentsDTO = await _documentDTOService.MapToDocumentDTOsAsync(documents.Items);
+			var result = Mapper.ToDocumentWithPagination(
+				documentsDTO, documents.Page, documents.PageSize, documents.Total, documents.HasMore);
+
+			return Ok(result);
+		}
 		[HttpGet("{id}")]
 		public async Task<ActionResult<DocumentDTO>> GetDocumentById(int id)
 		{

@@ -9,6 +9,8 @@ interface CategoriesSidebarProps {
 	categories: CategoryDTO[];
 	selectedCategoryId?: number | null;
 	onCategorySelect?: (categoryId: number | null) => void;
+	showEmptyOption?: boolean;
+	topOptionLabel?: string;
 	variant?: 'sidebar' | 'picker';
 }
 
@@ -16,9 +18,12 @@ export function CategoriesSidebar({
 	categories,
 	selectedCategoryId,
 	onCategorySelect,
+	showEmptyOption,
+	topOptionLabel,
 	variant = 'sidebar',
 }: CategoriesSidebarProps) {
 	const selectable = onCategorySelect !== undefined;
+	const emptyOptionVisible = showEmptyOption ?? variant === 'picker';
 
 	const buildCategoryTree = (): CategoryNode[] => {
 		const map = new Map<number, CategoryNode>();
@@ -79,13 +84,13 @@ export function CategoriesSidebar({
 		<div className={rootClassName}>
 			<h3 className="categories-sidebar__title">Категории</h3>
 			<div className="categories-sidebar__list">
-				{selectable && (
+				{selectable && emptyOptionVisible && (
 					<button
 						type="button"
 						className={`category-item__title category-item__title_selectable${selectedCategoryId === null ? " category-item__title_selected" : ""}`}
 						onClick={() => onCategorySelect(null)}
 					>
-						Без категории
+						{topOptionLabel ?? "Без категории"}
 					</button>
 				)}
 				{renderCategories(categoryTree)}

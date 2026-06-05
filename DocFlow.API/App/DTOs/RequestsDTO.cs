@@ -8,4 +8,5 @@
 	public record DocumentCreateDTO(string Name, int? CategoryId, bool IsPrivate);
 	public record DocumentAddVersionDTO(string Name);
 	public record DocumentVersionUpdateGeneralInfoDTO(string Name);
+	public record PaginationDTO(int Page, int PageSize);
 }

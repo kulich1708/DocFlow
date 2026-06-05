@@ -33,7 +33,7 @@ export function UserCabinet() {
 
 		const fetchCabinet = async () => {
 			setUser(await api.getUserById(userId));
-			setDocuments(await api.getUserDocuments(userId));
+			setDocuments((await api.getUserDocuments(userId)).items);
 		}
 		fetchCabinet();
 	}, [isCabinetRoute, isSettingsActive, isOwnCabinet, currentUserId, userId, navigate]);

@@ -44,7 +44,6 @@ export interface DocumentGeneralInfoDTO {
   /** @nullable */
   categoryName: string | null;
   isPrivate: boolean;
-  canEdit: boolean;
 }
 
 export interface DocumentVersionDTO {
@@ -63,10 +62,19 @@ export interface DocumentDTO {
   draftInitialContent: string | null;
   /** @nullable */
   draftModifiedAt: string | null;
+  canEdit: boolean;
 }
 
 export interface DocumentVersionUpdateGeneralInfoDTO {
   name: string;
+}
+
+export interface DocumentsDTOWithPagination {
+  items: DocumentGeneralInfoDTO[];
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
 }
 
 export interface UserLoginDTO {
@@ -86,6 +94,21 @@ export interface UserUpdateDTO {
   surname: string;
   email: string;
 }
+
+export type GetDocumentsByCategoryParams = {
+Page?: number;
+PageSize?: number;
+};
+
+export type GetAllParams = {
+Page?: number;
+PageSize?: number;
+};
+
+export type GetUserDocumentsParams = {
+Page?: number;
+PageSize?: number;
+};
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -146,9 +169,11 @@ const changeUserPassword = (
 
 const getDocumentsByCategory = (
     id: number,
- options?: SecondParameter<typeof axiosInstance<DocumentGeneralInfoDTO[]>>,) => {
-      return axiosInstance<DocumentGeneralInfoDTO[]>(
-      {url: `/api/Category/${id}/documents`, method: 'GET'
+    params?: GetDocumentsByCategoryParams,
+ options?: SecondParameter<typeof axiosInstance<DocumentsDTOWithPagination>>,) => {
+      return axiosInstance<DocumentsDTOWithPagination>(
+      {url: `/api/Category/${id}/documents`, method: 'GET',
+        params
     },
       options);
     }
@@ -162,11 +187,12 @@ const getCategories = (
       options);
     }
 
-const getDocumentById = (
-    id: number,
- options?: SecondParameter<typeof axiosInstance<DocumentDTO>>,) => {
-      return axiosInstance<DocumentDTO>(
-      {url: `/api/Documents/${id}`, method: 'GET'
+const getAll = (
+    params?: GetAllParams,
+ options?: SecondParameter<typeof axiosInstance<DocumentsDTOWithPagination>>,) => {
+      return axiosInstance<DocumentsDTOWithPagination>(
+      {url: `/api/Documents`, method: 'GET',
+        params
     },
       options);
     }
@@ -178,6 +204,15 @@ const createDocument = (
       {url: `/api/Documents`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: documentCreateDTO
+    },
+      options);
+    }
+
+const getDocumentById = (
+    id: number,
+ options?: SecondParameter<typeof axiosInstance<DocumentDTO>>,) => {
+      return axiosInstance<DocumentDTO>(
+      {url: `/api/Documents/${id}`, method: 'GET'
     },
       options);
     }
@@ -282,14 +317,16 @@ const getUserById = (
 
 const getUserDocuments = (
     id: number,
- options?: SecondParameter<typeof axiosInstance<DocumentGeneralInfoDTO[]>>,) => {
-      return axiosInstance<DocumentGeneralInfoDTO[]>(
-      {url: `/api/Users/${id}/documents`, method: 'GET'
+    params?: GetUserDocumentsParams,
+ options?: SecondParameter<typeof axiosInstance<DocumentsDTOWithPagination>>,) => {
+      return axiosInstance<DocumentsDTOWithPagination>(
+      {url: `/api/Users/${id}/documents`, method: 'GET',
+        params
     },
       options);
     }
 
-return {registerUser,loginUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getDocumentById,createDocument,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,changeDocumentVersionGeneralInfo,getUserById,getUserDocuments}};
+return {registerUser,loginUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getAll,createDocument,getDocumentById,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,changeDocumentVersionGeneralInfo,getUserById,getUserDocuments}};
 export type RegisterUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['registerUser']>>>
 export type LoginUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['loginUser']>>>
 export type UpdateUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['updateUser']>>>
@@ -297,8 +334,9 @@ export type DeleteUserAccountResult = NonNullable<Awaited<ReturnType<ReturnType<
 export type ChangeUserPasswordResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['changeUserPassword']>>>
 export type GetDocumentsByCategoryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getDocumentsByCategory']>>>
 export type GetCategoriesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getCategories']>>>
-export type GetDocumentByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getDocumentById']>>>
+export type GetAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getAll']>>>
 export type CreateDocumentResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['createDocument']>>>
+export type GetDocumentByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['getDocumentById']>>>
 export type UpdateDocumentGeneralInfoResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['updateDocumentGeneralInfo']>>>
 export type CreateDraftFromVersionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['createDraftFromVersion']>>>
 export type SaveDocumentDraftResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['saveDocumentDraft']>>>

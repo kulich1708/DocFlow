@@ -273,6 +273,22 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -281,26 +297,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               }
             }
@@ -347,17 +354,24 @@
         }
       }
     },
-    "/api/Documents/{id}": {
+    "/api/Documents": {
       "get": {
         "tags": [
           "Documents"
         ],
-        "operationId": "GetDocumentById",
+        "operationId": "GetAll",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -370,25 +384,23 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DocumentDTO"
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DocumentDTO"
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DocumentDTO"
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               }
             }
           }
         }
-      }
-    },
-    "/api/Documents": {
+      },
       "post": {
         "tags": [
           "Documents"
@@ -455,6 +467,47 @@
             "Bearer": [ ]
           }
         ]
+      }
+    },
+    "/api/Documents/{id}": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "operationId": "GetDocumentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Documents/{id}/general-info": {
@@ -917,6 +970,22 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -925,26 +994,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
-                  }
+                  "$ref": "#/components/schemas/DocumentsDTOWithPagination"
                 }
               }
             }
@@ -1030,6 +1090,7 @@
       },
       "DocumentDTO": {
         "required": [
+          "canEdit",
           "draftContent",
           "draftInitialContent",
           "draftModifiedAt",
@@ -1063,6 +1124,9 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "canEdit": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -1070,7 +1134,6 @@
       "DocumentGeneralInfoDTO": {
         "required": [
           "author",
-          "canEdit",
           "categoryId",
           "categoryName",
           "id",
@@ -1104,9 +1167,6 @@
             "nullable": true
           },
           "isPrivate": {
-            "type": "boolean"
-          },
-          "canEdit": {
             "type": "boolean"
           }
         },
@@ -1146,6 +1206,40 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentsDTOWithPagination": {
+        "required": [
+          "hasMore",
+          "items",
+          "page",
+          "pageSize",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentGeneralInfoDTO"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasMore": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

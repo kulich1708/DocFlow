@@ -166,7 +166,7 @@ export function DocumentDraftPage() {
 
 
 
-	if (!document.generalInfo.canEdit) {
+	if (!document.canEdit) {
 
 		return (
 

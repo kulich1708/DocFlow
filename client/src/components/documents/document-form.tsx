@@ -38,6 +38,7 @@ export function DocumentFormPage() {
 
 	const [categories, setCategories] = useState<CategoryDTO[]>([]);
 	const [generalInfo, setGeneralInfo] = useState<DocumentGeneralInfoDTO | null>(null);
+	const [canEdit, setCanEdit] = useState(false);
 	const [form, setForm] = useState<DocumentFormState>(emptyForm);
 	const [initialForm, setInitialForm] = useState<DocumentFormState>(emptyForm);
 	const [error, setError] = useState("");
@@ -54,6 +55,7 @@ export function DocumentFormPage() {
 		const document = await api.getDocumentById(documentId);
 		const nextForm = formFromGeneralInfo(document.generalInfo);
 		setGeneralInfo(document.generalInfo);
+		setCanEdit(document.canEdit);
 		setForm(nextForm);
 		setInitialForm(nextForm);
 	}, [documentId]);
@@ -103,7 +105,7 @@ export function DocumentFormPage() {
 
 	if (!isCreateMode && !generalInfo) return null;
 
-	if (!isCreateMode && generalInfo && !generalInfo.canEdit) {
+	if (!isCreateMode && !canEdit) {
 		return (
 			<div className="document-form">
 				<p className="document-form__error">Нет доступа к редактированию документа</p>
