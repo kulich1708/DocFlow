@@ -63,16 +63,24 @@ export function DocumentPage() {
 			<DocumentInfo
 				generalInfo={generalInfo}
 				titleAction={generalInfo.canEdit ? (
-					<button
-						type="button"
-						className="document-page__button document-page__button_danger"
-						onClick={() => {
-							setDeleteError("");
-							setIsDeleteModalOpen(true);
-						}}
-					>
-						Удалить документ
-					</button>
+					<div className="document-page__title-actions">
+						<Link
+							to={`/documents/${documentId}/edit`}
+							className="document-page__button document-page__button_secondary"
+						>
+							Редактировать документ
+						</Link>
+						<button
+							type="button"
+							className="document-page__button document-page__button_danger"
+							onClick={() => {
+								setDeleteError("");
+								setIsDeleteModalOpen(true);
+							}}
+						>
+							Удалить документ
+						</button>
+					</div>
 				) : undefined}
 				actions={generalInfo.canEdit ? (
 					<Link to={`/documents/${documentId}/draft`} className="document-page__button">
@@ -81,7 +89,14 @@ export function DocumentPage() {
 				) : undefined}
 			/>
 
-			<h3 className="document-page__versions-title">Версии</h3>
+			<div className="document-page__section-bar">
+				<h3 className="document-page__section-title">Версии</h3>
+				{generalInfo.canEdit && (
+					<Link to={`/documents/${documentId}/draft`} className="document-page__button">
+						Новая версия
+					</Link>
+				)}
+			</div>
 			<DocumentList documents={versionDocuments} documentId={documentId} />
 
 			<Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>

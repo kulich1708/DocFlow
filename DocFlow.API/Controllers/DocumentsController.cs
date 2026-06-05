@@ -40,14 +40,14 @@ namespace DocFlow.API.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateDocument([FromBody] DocumentCreateDTO dto)
+		public async Task<ActionResult<int>> CreateDocument([FromBody] DocumentCreateDTO dto)
 		{
 			int userId = User.GetUserIdOrThrow();
 			Document document = new(dto.Name, userId, dto.CategoryId, dto.IsPrivate);
 			_unitOfWork.Add(document);
 			await _unitOfWork.SaveChangesAsync();
 
-			return NoContent();
+			return Ok(document.Id);
 		}
 
 		[Authorize]

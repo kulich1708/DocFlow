@@ -18,6 +18,12 @@
 		margin-bottom: 16px;
 	}
 
+	&__title-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
 	&__title {
 		margin: 0;
 		font-size: 24px;
@@ -53,8 +59,17 @@
 		}
 	}
 
-	&__versions-title {
-		margin: 0 0 16px;
+	&__section-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		margin-bottom: 16px;
+	}
+
+	&__section-title {
+		margin: 0;
 		font-size: 20px;
 		font-weight: 600;
 		color: #333;

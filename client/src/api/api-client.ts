@@ -173,8 +173,8 @@ const getDocumentById = (
 
 const createDocument = (
     documentCreateDTO?: DocumentCreateDTO,
- options?: SecondParameter<typeof axiosInstance<void>>,) => {
-      return axiosInstance<void>(
+ options?: SecondParameter<typeof axiosInstance<number>>,) => {
+      return axiosInstance<number>(
       {url: `/api/Documents`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: documentCreateDTO

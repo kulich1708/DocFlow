@@ -1,47 +1,27 @@
-import { useEffect, useState } from 'react';
-import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from './api/api';
-import { DocumentList } from "./components/documents/document-list";
+import { HomePage } from "./components/home-page";
 import { DocumentPage } from "./components/documents/document";
-import { CategoriesSidebar } from "./components/categories-sidebar";
 import { Register } from "./components/account/register";
 import { Login } from "./components/account/login";
 import { UserCabinet } from "./components/user-cabinet/user-cabinet";
 import { Header } from "./components/header";
 import { DocumentVersionPage } from "./components/documents/document-version";
 import { DocumentDraftPage } from "./components/documents/document-draft";
+import { DocumentFormPage } from "./components/documents/document-form";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 function App() {
-	const [documents, setDocuments] = useState<DocumentGeneralInfoDTO[]>([]);
-	useEffect(() => {
-		const fetchDocuments = async () => {
-			setDocuments(await api.getUserDocuments(6));
-		}
-		fetchDocuments();
-	}, [])
-	const [categories, setCategories] = useState<CategoryDTO[]>([]);
-	useEffect(() => {
-		const fetchCategories = async () => {
-			setCategories(await api.getCategories());
-		}
-		fetchCategories();
-	}, [])
 	return (
 		<BrowserRouter>
 			<Header />
 			<Routes>
-				<Route path="/" element={
-					<div className="main">
-						<div className="main__container">
-							<CategoriesSidebar categories={categories} />
-							<DocumentList documents={documents} />
-						</div>
-					</div>
-				} />
+				<Route path="/" element={<HomePage />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/cabinet" element={<UserCabinet />} />
 				<Route path="/cabinet/settings" element={<UserCabinet />} />
 				<Route path="/users/:id" element={<UserCabinet />} />
+				<Route path="/documents/create" element={<DocumentFormPage />} />
+				<Route path="/documents/:id/edit" element={<DocumentFormPage />} />
 				<Route path="/documents/:id/draft" element={<DocumentDraftPage />} />
 				<Route path="/documents/:id/versions/:versionId" element={<DocumentVersionPage />} />
 				<Route path="/documents/:id" element={<DocumentPage />} />
