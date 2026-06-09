@@ -136,6 +136,15 @@ const loginUser = (
       options);
     }
 
+const logoutUser = (
+
+ options?: SecondParameter<typeof axiosInstance<void>>,) => {
+      return axiosInstance<void>(
+      {url: `/api/Account/logout`, method: 'POST'
+    },
+      options);
+    }
+
 const updateUser = (
     userUpdateDTO?: UserUpdateDTO,
  options?: SecondParameter<typeof axiosInstance<UserDTO>>,) => {
@@ -326,9 +335,10 @@ const getUserDocuments = (
       options);
     }
 
-return {registerUser,loginUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getAll,createDocument,getDocumentById,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,changeDocumentVersionGeneralInfo,getUserById,getUserDocuments}};
+return {registerUser,loginUser,logoutUser,updateUser,deleteUserAccount,changeUserPassword,getDocumentsByCategory,getCategories,getAll,createDocument,getDocumentById,updateDocumentGeneralInfo,createDraftFromVersion,saveDocumentDraft,resetDocumentDraft,addDocumentVersion,deleteDocumentVersion,deleteDocument,changeDocumentVersionGeneralInfo,getUserById,getUserDocuments}};
 export type RegisterUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['registerUser']>>>
 export type LoginUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['loginUser']>>>
+export type LogoutUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['logoutUser']>>>
 export type UpdateUserResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['updateUser']>>>
 export type DeleteUserAccountResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['deleteUserAccount']>>>
 export type ChangeUserPasswordResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocFlowAPI>['changeUserPassword']>>>

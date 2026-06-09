@@ -160,6 +160,7 @@ namespace DocFlow.API
 			services.AddScoped<DocumentRepository>();
 			services.AddScoped<CategoryRepository>();
 			services.AddScoped<DocumentDTOService>();
+			services.AddSingleton<ActivityLogService>();
 		}
 
 		private static async Task ConfigureMiddleware(WebApplication app)

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { api, type UserDTO } from "../../api/api";
 import { usePaginatedDocuments, emptyDocumentsPage } from "../../hooks/use-paginated-documents";
 import { getApiError } from "../../utils/get-api-error";
@@ -20,6 +20,9 @@ export function UserCabinet() {
 	const userId = isCabinetRoute ? currentUserId : Number(id);
 	const isOwnCabinet = currentUserId !== null && userId === currentUserId;
 	const documentsResetKey = userId !== null && !Number.isNaN(userId) ? userId : null;
+	const shouldRedirectToLogin = isCabinetRoute && currentUserId === null;
+	const shouldRedirectFromSettings = isSettingsActive && !isOwnCabinet;
+	const shouldFetchUser = documentsResetKey !== null && !shouldRedirectFromSettings;
 
 	const [user, setUser] = useState<UserDTO | null>(null);
 	const [userLoading, setUserLoading] = useState(true);
@@ -41,22 +44,9 @@ export function UserCabinet() {
 	);
 
 	useEffect(() => {
-		if (isCabinetRoute && currentUserId === null) {
-			navigate("/login");
+		if (!shouldFetchUser || documentsResetKey === null) {
 			return;
 		}
-		if (isSettingsActive && !isOwnCabinet) {
-			navigate("/cabinet");
-			return;
-		}
-		if (documentsResetKey === null) {
-			setUser(null);
-			setUserLoading(false);
-			setUserError("Некорректный адрес профиля");
-			return;
-		}
-
-		let cancelled = false;
 
 		const fetchUser = async () => {
 			setUserLoading(true);
@@ -64,30 +54,40 @@ export function UserCabinet() {
 			setUser(null);
 
 			try {
-				const nextUser = await api.getUserById(documentsResetKey);
-				if (!cancelled) {
-					setUser(nextUser);
-				}
+				setUser(await api.getUserById(documentsResetKey));
 			} catch (err) {
-				if (!cancelled) {
-					setUserError(getApiError(err, "Не удалось загрузить профиль"));
-				}
+				setUserError(getApiError(err, "Не удалось загрузить профиль"));
 			} finally {
-				if (!cancelled) {
-					setUserLoading(false);
-				}
+				setUserLoading(false);
 			}
 		};
 
-		fetchUser();
-		return () => {
-			cancelled = true;
-		};
-	}, [isCabinetRoute, isSettingsActive, isOwnCabinet, currentUserId, documentsResetKey, navigate]);
+		void fetchUser();
+	}, [shouldFetchUser, documentsResetKey]);
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
+		try {
+			await api.logoutUser();
+		}
+		catch { return }
 		localStorage.removeItem("token");
 		navigate("/login");
+	}
+
+	if (shouldRedirectToLogin) {
+		return <Navigate to="/login" replace />;
+	}
+
+	if (shouldRedirectFromSettings) {
+		return <Navigate to="/cabinet" replace />;
+	}
+
+	if (documentsResetKey === null) {
+		return (
+			<div className="user-cabinet">
+				<PageStatus error="Некорректный адрес профиля" />
+			</div>
+		);
 	}
 
 	if (userLoading) {
