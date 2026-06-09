@@ -38,33 +38,21 @@ export function DocumentDraftPage() {
 			return;
 		}
 
-		let cancelled = false;
-
 		const fetchDocument = async () => {
 			setLoading(true);
 			setLoadError("");
 			setDocument(null);
 
 			try {
-				const doc = await loadDocument();
-				if (!cancelled) {
-					setDocument(doc);
-				}
+				await loadDocument();
 			} catch (err) {
-				if (!cancelled) {
-					setLoadError(getApiError(err, "Не удалось загрузить документ"));
-				}
+				setLoadError(getApiError(err, "Не удалось загрузить документ"));
 			} finally {
-				if (!cancelled) {
-					setLoading(false);
-				}
+				setLoading(false);
 			}
 		};
 
-		fetchDocument();
-		return () => {
-			cancelled = true;
-		};
+		void fetchDocument();
 	}, [documentId, loadDocument]);
 
 	const handleSave = async () => {

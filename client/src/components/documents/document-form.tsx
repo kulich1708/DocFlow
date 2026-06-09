@@ -67,8 +67,6 @@ export function DocumentFormPage() {
 			return;
 		}
 
-		let cancelled = false;
-
 		const loadDocument = async () => {
 			setLoading(true);
 			setLoadError("");
@@ -76,28 +74,19 @@ export function DocumentFormPage() {
 
 			try {
 				const document = await api.getDocumentById(documentId);
-				if (cancelled) return;
-
 				const nextForm = formFromGeneralInfo(document.generalInfo);
 				setGeneralInfo(document.generalInfo);
 				setCanEdit(document.canEdit);
 				setForm(nextForm);
 				setInitialForm(nextForm);
 			} catch (err) {
-				if (!cancelled) {
-					setLoadError(getApiError(err, "Не удалось загрузить документ"));
-				}
+				setLoadError(getApiError(err, "Не удалось загрузить документ"));
 			} finally {
-				if (!cancelled) {
-					setLoading(false);
-				}
+				setLoading(false);
 			}
 		};
 
-		loadDocument();
-		return () => {
-			cancelled = true;
-		};
+		void loadDocument();
 	}, [isCreateMode, documentId]);
 
 	const handleReset = () => {

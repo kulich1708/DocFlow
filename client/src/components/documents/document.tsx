@@ -27,33 +27,21 @@ export function DocumentPage() {
 			return;
 		}
 
-		let cancelled = false;
-
 		const fetchDocument = async () => {
 			setLoading(true);
 			setLoadError("");
 			setDocument(null);
 
 			try {
-				const doc = await api.getDocumentById(documentId);
-				if (!cancelled) {
-					setDocument(doc);
-				}
+				setDocument(await api.getDocumentById(documentId));
 			} catch (err) {
-				if (!cancelled) {
-					setLoadError(getApiError(err, "Не удалось загрузить документ"));
-				}
+				setLoadError(getApiError(err, "Не удалось загрузить документ"));
 			} finally {
-				if (!cancelled) {
-					setLoading(false);
-				}
+				setLoading(false);
 			}
 		};
 
-		fetchDocument();
-		return () => {
-			cancelled = true;
-		};
+		void fetchDocument();
 	}, [documentId]);
 
 	const versionDocuments = useMemo((): DocumentGeneralInfoDTO[] => {

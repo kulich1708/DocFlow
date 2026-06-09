@@ -31,33 +31,21 @@ export function DocumentVersionPage() {
 			return;
 		}
 
-		let cancelled = false;
-
 		const fetchDocument = async () => {
 			setLoading(true);
 			setLoadError("");
 			setDocument(null);
 
 			try {
-				const doc = await api.getDocumentById(documentId);
-				if (!cancelled) {
-					setDocument(doc);
-				}
+				setDocument(await api.getDocumentById(documentId));
 			} catch (err) {
-				if (!cancelled) {
-					setLoadError(getApiError(err, "Не удалось загрузить документ"));
-				}
+				setLoadError(getApiError(err, "Не удалось загрузить документ"));
 			} finally {
-				if (!cancelled) {
-					setLoading(false);
-				}
+				setLoading(false);
 			}
 		};
 
-		fetchDocument();
-		return () => {
-			cancelled = true;
-		};
+		void fetchDocument();
 	}, [documentId]);
 
 	if (loading || loadError) {
@@ -116,7 +104,7 @@ export function DocumentVersionPage() {
 		} catch (err) {
 			const message = getApiError(err, "Не удалось сохранить название версии");
 			setNameError(message);
-			throw new Error(message);
+			throw new Error(message, { cause: err });
 		}
 	};
 
