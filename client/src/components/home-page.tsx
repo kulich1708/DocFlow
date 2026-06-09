@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, type CategoryDTO } from "../api/api";
 import { usePaginatedDocuments } from "../hooks/use-paginated-documents";
+import { PageStatus } from "./page-status/page-status";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { DocumentList } from "./documents/document-list";
 
 export function HomePage() {
 	const [categories, setCategories] = useState<CategoryDTO[]>([]);
+	const [categoriesLoading, setCategoriesLoading] = useState(true);
+	const [categoriesError, setCategoriesError] = useState("");
 	const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
 
 	const documentsResetKey = selectedCategoryId ?? "all";
@@ -20,14 +23,24 @@ export function HomePage() {
 		[selectedCategoryId],
 	);
 
-	const { documents, hasMore, loadingMore, loadMore } = usePaginatedDocuments(
+	const { documents, hasMore, loading, loadingMore, error, loadMore } = usePaginatedDocuments(
 		fetchDocumentsPage,
 		documentsResetKey,
 	);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			setCategories(await api.getCategories());
+			setCategoriesLoading(true);
+			setCategoriesError("");
+
+			try {
+				setCategories(await api.getCategories());
+			} catch {
+				setCategories([]);
+				setCategoriesError("Не удалось загрузить категории");
+			} finally {
+				setCategoriesLoading(false);
+			}
 		};
 		fetchCategories();
 	}, []);
@@ -35,19 +48,29 @@ export function HomePage() {
 	return (
 		<div className="main">
 			<div className="main__container">
-				<CategoriesSidebar
-					categories={categories}
-					selectedCategoryId={selectedCategoryId}
-					onCategorySelect={setSelectedCategoryId}
-					showEmptyOption
-					topOptionLabel="Все документы"
-				/>
-				<DocumentList
-					documents={documents}
-					hasMore={hasMore}
-					loadingMore={loadingMore}
-					onLoadMore={loadMore}
-				/>
+				{categoriesLoading ? (
+					<PageStatus loading />
+				) : categoriesError ? (
+					<PageStatus error={categoriesError} />
+				) : (
+					<CategoriesSidebar
+						categories={categories}
+						selectedCategoryId={selectedCategoryId}
+						onCategorySelect={setSelectedCategoryId}
+						showEmptyOption
+						topOptionLabel="Все документы"
+					/>
+				)}
+				<div className="main__content">
+					{error && <PageStatus error={error} />}
+					<DocumentList
+						documents={documents}
+						loading={loading}
+						hasMore={hasMore}
+						loadingMore={loadingMore}
+						onLoadMore={loadMore}
+					/>
+				</div>
 			</div>
 		</div>
 	);

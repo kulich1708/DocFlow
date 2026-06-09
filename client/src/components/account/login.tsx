@@ -19,7 +19,7 @@ export function Login() {
 			localStorage.setItem("token", token);
 			navigate("/cabinet");
 		} catch (err) {
-			setError(getApiError(err) ?? '');
+			setError(getApiError(err, "Неверный email или пароль"));
 		}
 	}
 

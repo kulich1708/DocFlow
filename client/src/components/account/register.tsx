@@ -21,7 +21,7 @@ export function Register() {
 			localStorage.setItem("token", token);
 			navigate("/cabinet");
 		} catch (err) {
-			setError(getApiError(err) ?? '');
+			setError(getApiError(err, "Не удалось зарегистрироваться"));
 		}
 	}
 

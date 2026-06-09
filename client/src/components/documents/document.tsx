@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type DocumentDTO, type DocumentGeneralInfoDTO } from "../../api/api";
 import { getApiError } from "../../utils/get-api-error";
+import { PageStatus } from "../page-status/page-status";
 import { Modal } from "../modal/modal";
 import { DocumentInfo } from "./document-info";
 import { DocumentList } from "./document-list";
@@ -13,17 +14,46 @@ export function DocumentPage() {
 	const documentId = Number(id);
 
 	const [document, setDocument] = useState<DocumentDTO | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState("");
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [deleteError, setDeleteError] = useState("");
 	const [deleting, setDeleting] = useState(false);
 
 	useEffect(() => {
-		if (Number.isNaN(documentId)) return;
+		if (Number.isNaN(documentId)) {
+			setLoading(false);
+			setLoadError("Некорректный адрес документа");
+			return;
+		}
+
+		let cancelled = false;
 
 		const fetchDocument = async () => {
-			setDocument(await api.getDocumentById(documentId));
-		}
+			setLoading(true);
+			setLoadError("");
+			setDocument(null);
+
+			try {
+				const doc = await api.getDocumentById(documentId);
+				if (!cancelled) {
+					setDocument(doc);
+				}
+			} catch (err) {
+				if (!cancelled) {
+					setLoadError(getApiError(err, "Не удалось загрузить документ"));
+				}
+			} finally {
+				if (!cancelled) {
+					setLoading(false);
+				}
+			}
+		};
+
 		fetchDocument();
+		return () => {
+			cancelled = true;
+		};
 	}, [documentId]);
 
 	const versionDocuments = useMemo((): DocumentGeneralInfoDTO[] => {
@@ -40,7 +70,21 @@ export function DocumentPage() {
 		}));
 	}, [document]);
 
-	if (!document) return null;
+	if (loading || loadError) {
+		return (
+			<div className="document-page">
+				<PageStatus loading={loading} error={loadError} />
+			</div>
+		);
+	}
+
+	if (!document) {
+		return (
+			<div className="document-page">
+				<PageStatus error="Документ не найден" />
+			</div>
+		);
+	}
 
 	const { generalInfo, canEdit } = document;
 
@@ -51,7 +95,7 @@ export function DocumentPage() {
 			await api.deleteDocument(documentId);
 			navigate("/cabinet");
 		} catch (err) {
-			setDeleteError(getApiError(err) ?? "Не удалось удалить документ");
+			setDeleteError(getApiError(err, "Не удалось удалить документ"));
 		} finally {
 			setDeleting(false);
 		}
@@ -96,7 +140,11 @@ export function DocumentPage() {
 					</Link>
 				)}
 			</div>
-			<DocumentList documents={versionDocuments} documentId={documentId} />
+			<DocumentList
+				documents={versionDocuments}
+				documentId={documentId}
+				emptyMessage="Версий пока нет"
+			/>
 
 			<Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
 				<h3 className="document-page__modal-title">Удаление документа</h3>

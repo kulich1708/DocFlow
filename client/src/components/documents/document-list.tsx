@@ -5,6 +5,8 @@ import "./document-list.scss"
 type DocumentListProps = {
 	documents: DocumentGeneralInfoDTO[];
 	documentId?: number;
+	loading?: boolean;
+	emptyMessage?: string;
 	hasMore?: boolean;
 	loadingMore?: boolean;
 	onLoadMore?: () => void;
@@ -13,24 +15,32 @@ type DocumentListProps = {
 export function DocumentList({
 	documents,
 	documentId,
+	loading,
+	emptyMessage = "Документов нет",
 	hasMore,
 	loadingMore,
 	onLoadMore,
 }: DocumentListProps) {
 	return (
 		<div className="document-list">
-			<div className="document-grid">
-				{documents.map(d => (
-					<DocumentCard
-						key={d.id}
-						document={d}
-						to={documentId !== undefined
-							? `/documents/${documentId}/versions/${d.id}`
-							: `/documents/${d.id}`}
-						showAuthor={documentId === undefined}
-					/>
-				))}
-			</div>
+			{loading ? (
+				<p className="document-list__status">Загрузка...</p>
+			) : documents.length === 0 ? (
+				<p className="document-list__status">{emptyMessage}</p>
+			) : (
+				<div className="document-grid">
+					{documents.map(d => (
+						<DocumentCard
+							key={d.id}
+							document={d}
+							to={documentId !== undefined
+								? `/documents/${documentId}/versions/${d.id}`
+								: `/documents/${d.id}`}
+							showAuthor={documentId === undefined}
+						/>
+					))}
+				</div>
+			)}
 
 			{hasMore && onLoadMore && (
 				<div className="document-list__more">

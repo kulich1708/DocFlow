@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, type DocumentDTO } from "../../api/api";
 import { getApiError } from "../../utils/get-api-error";
+import { PageStatus } from "../page-status/page-status";
 import { MarkdownEditor } from "../markdown-editor/markdown-editor";
 import { Modal } from "../modal/modal";
 import { DocumentInfo } from "./document-info";
@@ -14,6 +15,8 @@ export function DocumentVersionPage() {
 	const versionIdNum = Number(versionId);
 
 	const [document, setDocument] = useState<DocumentDTO | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState("");
 	const [draftError, setDraftError] = useState("");
 	const [nameError, setNameError] = useState("");
 	const [creatingDraft, setCreatingDraft] = useState(false);
@@ -22,21 +25,62 @@ export function DocumentVersionPage() {
 	const [deleting, setDeleting] = useState(false);
 
 	useEffect(() => {
-		if (Number.isNaN(documentId)) return;
+		if (Number.isNaN(documentId)) {
+			setLoading(false);
+			setLoadError("Некорректный адрес документа");
+			return;
+		}
+
+		let cancelled = false;
 
 		const fetchDocument = async () => {
-			setDocument(await api.getDocumentById(documentId));
+			setLoading(true);
+			setLoadError("");
+			setDocument(null);
+
+			try {
+				const doc = await api.getDocumentById(documentId);
+				if (!cancelled) {
+					setDocument(doc);
+				}
+			} catch (err) {
+				if (!cancelled) {
+					setLoadError(getApiError(err, "Не удалось загрузить документ"));
+				}
+			} finally {
+				if (!cancelled) {
+					setLoading(false);
+				}
+			}
 		};
+
 		fetchDocument();
+		return () => {
+			cancelled = true;
+		};
 	}, [documentId]);
 
-	if (!document) return null;
+	if (loading || loadError) {
+		return (
+			<div className="document-page">
+				<PageStatus loading={loading} error={loadError} />
+			</div>
+		);
+	}
+
+	if (!document) {
+		return (
+			<div className="document-page">
+				<PageStatus error="Документ не найден" />
+			</div>
+		);
+	}
 
 	const version = document.versions.find(v => v.id === versionIdNum);
 	if (!version) {
 		return (
 			<div className="document-page">
-				<p className="document-page__row">Версия не найдена</p>
+				<PageStatus error="Версия не найдена" />
 			</div>
 		);
 	}
@@ -50,7 +94,7 @@ export function DocumentVersionPage() {
 			await api.createDraftFromVersion(documentId, versionIdNum);
 			navigate(`/documents/${documentId}/draft`);
 		} catch (err) {
-			setDraftError(getApiError(err) ?? "Не удалось создать черновик");
+			setDraftError(getApiError(err, "Не удалось создать черновик"));
 		} finally {
 			setCreatingDraft(false);
 		}
@@ -70,7 +114,7 @@ export function DocumentVersionPage() {
 				};
 			});
 		} catch (err) {
-			const message = getApiError(err) ?? "Не удалось сохранить название версии";
+			const message = getApiError(err, "Не удалось сохранить название версии");
 			setNameError(message);
 			throw new Error(message);
 		}
@@ -83,7 +127,7 @@ export function DocumentVersionPage() {
 			await api.deleteDocumentVersion(documentId, versionIdNum);
 			navigate(`/documents/${documentId}`);
 		} catch (err) {
-			setDeleteError(getApiError(err) ?? "Не удалось удалить версию");
+			setDeleteError(getApiError(err, "Не удалось удалить версию"));
 		} finally {
 			setDeleting(false);
 		}

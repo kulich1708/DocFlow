@@ -7,6 +7,7 @@ import { Header } from "./components/header";
 import { DocumentVersionPage } from "./components/documents/document-version";
 import { DocumentDraftPage } from "./components/documents/document-draft";
 import { DocumentFormPage } from "./components/documents/document-form";
+import { NotFoundPage } from "./components/not-found-page";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 				<Route path="/documents/:id/draft" element={<DocumentDraftPage />} />
 				<Route path="/documents/:id/versions/:versionId" element={<DocumentVersionPage />} />
 				<Route path="/documents/:id" element={<DocumentPage />} />
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</BrowserRouter>
 	)

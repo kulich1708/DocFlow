@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type CategoryDTO, type DocumentGeneralInfoDTO } from "../../api/api";
 import { getApiError } from "../../utils/get-api-error";
+import { PageStatus } from "../page-status/page-status";
 import { CategoriesSidebar } from "../categories-sidebar";
 import "./document-form.scss";
 
@@ -41,29 +42,63 @@ export function DocumentFormPage() {
 	const [canEdit, setCanEdit] = useState(false);
 	const [form, setForm] = useState<DocumentFormState>(emptyForm);
 	const [initialForm, setInitialForm] = useState<DocumentFormState>(emptyForm);
+	const [loading, setLoading] = useState(!isCreateMode);
+	const [loadError, setLoadError] = useState("");
 	const [error, setError] = useState("");
 	const [busy, setBusy] = useState(false);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			setCategories(await api.getCategories());
+			try {
+				setCategories(await api.getCategories());
+			} catch {
+				setCategories([]);
+			}
 		};
 		fetchCategories();
 	}, []);
 
-	const loadDocument = useCallback(async () => {
-		const document = await api.getDocumentById(documentId);
-		const nextForm = formFromGeneralInfo(document.generalInfo);
-		setGeneralInfo(document.generalInfo);
-		setCanEdit(document.canEdit);
-		setForm(nextForm);
-		setInitialForm(nextForm);
-	}, [documentId]);
-
 	useEffect(() => {
-		if (isCreateMode || Number.isNaN(documentId)) return;
+		if (isCreateMode || Number.isNaN(documentId)) {
+			if (!isCreateMode && Number.isNaN(documentId)) {
+				setLoading(false);
+				setLoadError("Некорректный адрес документа");
+			}
+			return;
+		}
+
+		let cancelled = false;
+
+		const loadDocument = async () => {
+			setLoading(true);
+			setLoadError("");
+			setGeneralInfo(null);
+
+			try {
+				const document = await api.getDocumentById(documentId);
+				if (cancelled) return;
+
+				const nextForm = formFromGeneralInfo(document.generalInfo);
+				setGeneralInfo(document.generalInfo);
+				setCanEdit(document.canEdit);
+				setForm(nextForm);
+				setInitialForm(nextForm);
+			} catch (err) {
+				if (!cancelled) {
+					setLoadError(getApiError(err, "Не удалось загрузить документ"));
+				}
+			} finally {
+				if (!cancelled) {
+					setLoading(false);
+				}
+			}
+		};
+
 		loadDocument();
-	}, [isCreateMode, documentId, loadDocument]);
+		return () => {
+			cancelled = true;
+		};
+	}, [isCreateMode, documentId]);
 
 	const handleReset = () => {
 		setError("");
@@ -97,13 +132,30 @@ export function DocumentFormPage() {
 			});
 			navigate(`/documents/${documentId}`);
 		} catch (err) {
-			setError(getApiError(err) ?? (isCreateMode ? "Не удалось создать документ" : "Не удалось сохранить документ"));
+			setError(getApiError(
+				err,
+				isCreateMode ? "Не удалось создать документ" : "Не удалось сохранить документ",
+			));
 		} finally {
 			setBusy(false);
 		}
 	};
 
-	if (!isCreateMode && !generalInfo) return null;
+	if (!isCreateMode && (loading || loadError)) {
+		return (
+			<div className="document-form">
+				<PageStatus loading={loading} error={loadError} />
+			</div>
+		);
+	}
+
+	if (!isCreateMode && !generalInfo) {
+		return (
+			<div className="document-form">
+				<PageStatus error="Документ не найден" />
+			</div>
+		);
+	}
 
 	if (!isCreateMode && !canEdit) {
 		return (

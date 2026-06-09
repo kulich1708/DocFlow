@@ -8,6 +8,7 @@ type DocumentFilter = "all" | "public" | "private";
 type CabinetDocumentsProps = {
 	documents: DocumentGeneralInfoDTO[];
 	isOwnCabinet: boolean;
+	loading?: boolean;
 	hasMore?: boolean;
 	loadingMore?: boolean;
 	onLoadMore?: () => void;
@@ -16,6 +17,7 @@ type CabinetDocumentsProps = {
 export function CabinetDocuments({
 	documents,
 	isOwnCabinet,
+	loading,
 	hasMore,
 	loadingMore,
 	onLoadMore,
@@ -60,6 +62,7 @@ export function CabinetDocuments({
 
 			<DocumentList
 				documents={filteredDocuments}
+				loading={loading}
 				hasMore={hasMore}
 				loadingMore={loadingMore}
 				onLoadMore={onLoadMore}

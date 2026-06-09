@@ -35,7 +35,7 @@ export function Settings({ user, onCancel, onSaved }: SettingsProps) {
 			const updatedUser = await api.updateUser({ name, surname, email });
 			onSaved(updatedUser);
 		} catch (err) {
-			setFormError(getApiError(err) ?? "Не удалось сохранить");
+			setFormError(getApiError(err, "Не удалось сохранить"));
 		}
 	}
 
@@ -49,7 +49,7 @@ export function Settings({ user, onCancel, onSaved }: SettingsProps) {
 			setNewPassword("");
 			setIsPasswordModalOpen(false);
 		} catch (err) {
-			setPasswordError(getApiError(err) ?? "Не удалось изменить пароль");
+			setPasswordError(getApiError(err, "Не удалось изменить пароль"));
 		}
 	}
 
@@ -61,7 +61,7 @@ export function Settings({ user, onCancel, onSaved }: SettingsProps) {
 			localStorage.removeItem("token");
 			navigate("/login");
 		} catch (err) {
-			setDeleteError(getApiError(err) ?? "Не удалось удалить аккаунт");
+			setDeleteError(getApiError(err, "Не удалось удалить аккаунт"));
 		}
 	}
 

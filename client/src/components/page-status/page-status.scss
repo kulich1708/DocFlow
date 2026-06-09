@@ -1,0 +1,9 @@
+.page-status {
+	margin: 24px 0;
+	font-size: 14px;
+	color: #666;
+
+	&_error {
+		color: #c0392b;
+	}
+}
