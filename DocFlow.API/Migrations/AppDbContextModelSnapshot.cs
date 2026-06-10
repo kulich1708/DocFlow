@@ -95,6 +95,10 @@ namespace DocFlow.API.Migrations
                     b.Property<int?>("DocumentId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Version")
                         .HasColumnType("integer");
 

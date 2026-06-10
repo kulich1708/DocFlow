@@ -1,0 +1,19 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+[class*="__container"] {
+	max-width: 1200px;
+	padding: 0px 10px;
+}
+.main {
+	&__container {
+		display: flex;
+		gap: 20px;
+	}
+
+	&__content {
+		flex: 1;
+		min-width: 0;
+	}
+}

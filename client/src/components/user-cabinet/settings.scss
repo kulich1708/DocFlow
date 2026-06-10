@@ -1,0 +1,134 @@
+.settings {
+	&__title {
+		margin: 0 0 20px;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__form {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 400px;
+	}
+
+	&__field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	&__label {
+		font-size: 14px;
+		color: #666;
+	}
+
+	&__input {
+		padding: 10px 12px;
+		font-size: 16px;
+		color: #333;
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		outline: none;
+
+		&:focus {
+			border-color: #333;
+		}
+	}
+
+	&__error {
+		margin: 0;
+		font-size: 14px;
+		color: #c0392b;
+	}
+
+	&__button {
+		padding: 10px 16px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #fff;
+		background: #333;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+
+		&:hover {
+			background: #555;
+		}
+
+		&_secondary {
+			color: #333;
+			background: #fff;
+			border: 1px solid #e0e0e0;
+
+			&:hover {
+				background: #f5f5f5;
+			}
+		}
+
+		&_danger {
+			background: #c0392b;
+
+			&:hover {
+				background: #a93226;
+			}
+		}
+	}
+
+	&__footer {
+		display: flex;
+		gap: 12px;
+		max-width: 400px;
+		margin-top: 24px;
+	}
+
+	&__actions {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+		max-width: 400px;
+		margin-top: 24px;
+	}
+
+	&__link {
+		padding: 0;
+		font-size: 14px;
+		color: #666;
+		background: none;
+		border: none;
+		cursor: pointer;
+
+		&:hover {
+			color: #333;
+		}
+
+		&_danger {
+			color: #c0392b;
+
+			&:hover {
+				color: #a93226;
+			}
+		}
+	}
+
+	&__modal-title {
+		margin: 0 0 16px;
+		padding-right: 24px;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__modal-text {
+		margin: 0 0 20px;
+		font-size: 14px;
+		color: #666;
+	}
+
+	&__modal-actions {
+		display: flex;
+		gap: 12px;
+	}
+}

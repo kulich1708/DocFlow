@@ -52,26 +52,29 @@ namespace DocFlow.API.Documents
 				IsChanged = true;
 			Draft.Update(new(content));
 		}
-		public void AddVersion()
+		public DocumentVersion AddVersion(string name)
 		{
 			var lastDocumentVersion = GetLastVersion();
 
 			if (!IsChanged || lastDocumentVersion != null && lastDocumentVersion.Content.Value == Draft.Content.Value)
 				throw new ArgumentException("Текст этой версии не отличается от предыдущей");
 
-			int version = lastDocumentVersion?.Version ?? 0 + 1;
-			DocumentVersion documentVersion = new(version, Draft.Content.Value);
+			int version = (lastDocumentVersion?.Version ?? 0) + 1;
+			DocumentVersion documentVersion = new(version, name, Draft.Content.Value);
 			_versions.Add(documentVersion);
 
 			IsChanged = false;
+			return documentVersion;
 		}
 		public void DeleteVersion(int versionId)
 		{
-			var version = _versions.FirstOrDefault(v => v.Id == versionId);
-			if (version == null)
-				throw new ArgumentException("Документ не содержит такой версии");
-
+			var version = GetDocumentVersion(versionId);
 			_versions.Remove(version);
+		}
+		public void ChangeVersionGeneralInfo(int versionId, string name)
+		{
+			var version = GetDocumentVersion(versionId);
+			version.SetName(name);
 		}
 		public void CreateDraftFromVersion(int versionId)
 		{
@@ -91,14 +94,12 @@ namespace DocFlow.API.Documents
 			if (categoryId.HasValue)
 				SetCategory(categoryId.Value);
 		}
-		public DocumentVersion GetDocumentVersion(int versionId)
-		{
-			var version = _versions.FirstOrDefault(v => v.Id == versionId);
-			if (version == null)
-				throw new ArgumentException("Документ не содержит такой версии");
-			return version;
-		}
 
 		private DocumentVersion? GetLastVersion() => _versions.LastOrDefault();
+		private DocumentVersion GetDocumentVersion(int versionId)
+		{
+			return _versions.FirstOrDefault(v => v.Id == versionId)
+				?? throw new ArgumentException("Документ не содержит такой версии");
+		}
 	}
 }

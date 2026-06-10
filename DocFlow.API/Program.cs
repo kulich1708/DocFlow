@@ -3,6 +3,7 @@ using DocFlow.API.App.Services.Auth;
 using DocFlow.API.Persistence.DbContexts;
 using DocFlow.API.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +26,42 @@ namespace DocFlow.API
 			}
 		}
 	}
+
+	public class AuthorizeOperationFilter : IOperationFilter
+	{
+		public void Apply(OpenApiOperation operation, OperationFilterContext context)
+		{
+			if (!RequiresAuthorization(context))
+				return;
+
+			operation.Security ??= [];
+			operation.Security.Add(new OpenApiSecurityRequirement
+			{
+				[new OpenApiSecuritySchemeReference("Bearer", context.Document)] = []
+			});
+		}
+
+		private static bool RequiresAuthorization(OperationFilterContext context)
+		{
+			var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
+
+			if (metadata.OfType<AllowAnonymousAttribute>().Any())
+				return false;
+
+			if (metadata.OfType<IAuthorizeData>().Any())
+				return true;
+
+			var controllerType = context.MethodInfo.DeclaringType;
+			if (controllerType == null)
+				return false;
+
+			return controllerType
+				.GetCustomAttributes(inherit: true)
+				.OfType<IAuthorizeData>()
+				.Any();
+		}
+	}
+
 	public class Program
 	{
 
@@ -93,16 +130,13 @@ namespace DocFlow.API
 				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 				{
 					Name = "Authorization",
-					Type = SecuritySchemeType.ApiKey,
-					Scheme = "Bearer",
+					Type = SecuritySchemeType.Http,
+					Scheme = "bearer",
 					BearerFormat = "JWT",
 					In = ParameterLocation.Header,
-					Description = "Введите токен в формате: Bearer ваш_токен"
+					Description = "Введите только токен"
 				});
-				options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
-				{
-					[new OpenApiSecuritySchemeReference("Bearer", doc)] = new List<string>()
-				});
+				options.OperationFilter<AuthorizeOperationFilter>();
 				options.UseAllOfToExtendReferenceSchemas();
 				options.SupportNonNullableReferenceTypes();
 
@@ -126,6 +160,7 @@ namespace DocFlow.API
 			services.AddScoped<DocumentRepository>();
 			services.AddScoped<CategoryRepository>();
 			services.AddScoped<DocumentDTOService>();
+			services.AddSingleton<ActivityLogService>();
 		}
 
 		private static async Task ConfigureMiddleware(WebApplication app)

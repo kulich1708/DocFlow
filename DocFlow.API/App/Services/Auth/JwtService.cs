@@ -72,9 +72,8 @@ namespace DocFlow.API.App.Services.Auth
 		}
 		public static int GetUserIdOrThrow(this ClaimsPrincipal user)
 		{
-			string? value = user.FindFirst("userId")?.Value;
-			if (value == null)
-				throw new ArgumentException("Не удалось получить id пользователя");
+			string? value = user.FindFirst("userId")?.Value
+				?? throw new ArgumentException("Не удалось получить id пользователя");
 			return int.Parse(value);
 		}
 	}
