@@ -12,7 +12,7 @@ namespace DocFlow.API.App.Services
 	{
 		private readonly UserRepository _userRepository = userRepository;
 		private readonly CategoryRepository _categoryRepository = categoryRepository;
-		public async Task<List<DocumentGeneralInfoDTO>> MapToDocumentDTOsAsync(List<Document> documents, bool canEdit)
+		public async Task<List<DocumentGeneralInfoDTO>> MapToDocumentDTOsAsync(List<Document> documents)
 		{
 			var usersId = documents.Where(d => d.AuthorId.HasValue).Select(d => d.AuthorId!.Value).Distinct().ToList();
 			var users = (await _userRepository.GetAsync(usersId)).ToDictionary(u => u.Id);
@@ -23,8 +23,7 @@ namespace DocFlow.API.App.Services
 			return documents.Select(d => Mapper.ToDocumentGeneralInfoDTO(
 				d,
 				d.AuthorId.HasValue ? users.GetValueOrDefault(d.AuthorId.Value) : null,
-				d.CategoryId.HasValue ? categories.GetValueOrDefault(d.CategoryId.Value) : null,
-				canEdit)).ToList();
+				d.CategoryId.HasValue ? categories.GetValueOrDefault(d.CategoryId.Value) : null)).ToList();
 		}
 	}
 }

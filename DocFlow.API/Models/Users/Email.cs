@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using EmailValidation;
 
 namespace DocFlow.API.Users
 {
@@ -12,7 +13,7 @@ namespace DocFlow.API.Users
 			if (string.IsNullOrWhiteSpace(value))
 				throw new ArgumentException("Email не может быть пустым");
 
-			if (!value.Contains('@') || !value.Contains('.'))
+			if (!EmailValidator.Validate(value))
 				throw new ArgumentException("Некорректный формат Email");
 
 			Value = value.Trim().ToLowerInvariant();

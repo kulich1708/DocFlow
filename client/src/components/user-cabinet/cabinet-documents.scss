@@ -1,0 +1,40 @@
+.cabinet-documents {
+	&__title {
+		margin: 0 0 16px;
+		font-size: 20px;
+		font-weight: 600;
+		color: #333;
+	}
+
+	&__filter {
+		display: flex;
+		gap: 8px;
+		margin-bottom: 20px;
+	}
+
+	&__filter-item {
+		padding: 8px 14px;
+		font-size: 14px;
+		color: #666;
+		background: #fff;
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		cursor: pointer;
+
+		&:hover:not(&_active) {
+			border-color: #333;
+			color: #333;
+		}
+
+		&_active {
+			color: #fff;
+			background: #333;
+			border-color: #333;
+
+			&:hover {
+				cursor: default;
+			}
+		}
+	}
+
+}

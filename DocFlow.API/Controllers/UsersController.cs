@@ -30,14 +30,17 @@ namespace DocFlow.API.Controllers
 			return Ok(userDTO);
 		}
 		[HttpGet("{id}/documents")]
-		public async Task<ActionResult<List<DocumentGeneralInfoDTO>>> GetUserDocuments(int id)
+		public async Task<ActionResult<DocumentsDTOWithPagination>> GetUserDocuments(int id, [FromQuery] PaginationDTO? dto)
 		{
+			(int page, int pageSize) = PaginationService.Get(dto);
+
 			int? authorizationUserId = User.GetUserId();
 
-			bool isMe = authorizationUserId.HasValue && authorizationUserId.Value == id;
-			var documents = await _documentRepository.GetByUserAsync(id, isMe);
-			var documentsDTO = await _documentDTOService.MapToDocumentDTOsAsync(documents, isMe);
-			return Ok(documentsDTO);
+			var documents = await _documentRepository.GetByUserAsync(id, authorizationUserId, page, pageSize);
+			var documentsDTO = await _documentDTOService.MapToDocumentDTOsAsync(documents.Items);
+			var result = Mapper.ToDocumentWithPagination(
+				documentsDTO, documents.Page, documents.PageSize, documents.Total, documents.HasMore);
+			return Ok(result);
 		}
 	}
 }

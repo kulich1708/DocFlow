@@ -1,4 +1,5 @@
-﻿using DocFlow.API.Documents;
+﻿using DocFlow.API.App.DTOs;
+using DocFlow.API.Documents;
 using DocFlow.API.Persistence.DbContexts;
 using DocFlow.API.Users;
 using Microsoft.EntityFrameworkCore;
@@ -15,15 +16,25 @@ namespace DocFlow.API.Persistence.Repositories
 		public async Task<Document> GetAsync(int id)
 			=> await _context.Documents.Include(d => d.Versions).FirstOrDefaultAsync(d => d.Id == id)
 			?? throw new InvalidOperationException($"Документ с {id} не найден");
-		public async Task<List<Document>> GetByCategoriesAsync(List<int> categoriesId)
-			=> await _context.Documents.Where(d => d.CategoryId.HasValue && categoriesId.Contains(d.CategoryId.Value)).ToListAsync();
-
-		public async Task<List<Document>> GetByUserAsync(int userId, bool includePrivate = false)
+		public async Task<DocumentsWithPagination> GetAllAsync(int? userId, int page, int pageSize)
 		{
-			var query = _context.Documents.Include(d => d.Versions).Where(d => d.AuthorId == userId);
-			if (!includePrivate)
-				query = query.Where(d => !d.IsPrivate);
-			return await query.ToListAsync();
+			return await GetDocumentsAsync(_context.Documents, page, pageSize, userId);
+		}
+		public async Task<DocumentsWithPagination> GetByCategoriesAsync(
+			List<int> categoriesId, int? userId, int page, int pageSize)
+		{
+			var query = _context.Documents
+				.Where(d => d.CategoryId.HasValue && categoriesId.Contains(d.CategoryId.Value));
+
+			return await GetDocumentsAsync(query, page, pageSize, userId);
+		}
+
+
+		public async Task<DocumentsWithPagination> GetByUserAsync(int profileUserId, int? userId, int page, int pageSize)
+		{
+			var query = _context.Documents.Where(d => d.AuthorId == profileUserId);
+
+			return await GetDocumentsAsync(query, page, pageSize, userId);
 		}
 
 		public async Task DeleteAuthorAsync(int userId)
@@ -42,6 +53,16 @@ namespace DocFlow.API.Persistence.Repositories
 			Document? document = await _context.Documents.FirstOrDefaultAsync(d => d.Id == id);
 			if (document != null)
 				_context.Remove(document);
+		}
+		private async Task<DocumentsWithPagination> GetDocumentsAsync(
+			IQueryable<Document> query, int page, int pageSize, int? userId)
+		{
+			query = query.Where(d => !d.IsPrivate || d.AuthorId == userId);
+
+			query = query.OrderByDescending(d => d.CreatedAt);
+			int total = await query.CountAsync();
+			var documents = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+			return new(documents, page, pageSize, total, total > page * pageSize);
 		}
 	}
 }
